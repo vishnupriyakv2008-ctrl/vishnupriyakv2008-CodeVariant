@@ -80,7 +80,7 @@ function renderPendingDeletion(){
  const tray=$('pendingActionTray');
  if(!pendingDeletion){tray.classList.add('hidden');tray.innerHTML='';return}
  tray.classList.remove('hidden');
- tray.innerHTML='<div class="data-card draft-card" draggable="true" data-card-type="pending-delete" data-record-id="'+esc(pendingDeletion.id)+'" data-source="'+esc(pendingDeletion.kind)+'" tabindex="0"><strong>DELETION PENDING · '+esc(pendingDeletion.label)+'</strong><span>Nothing is deleted yet. Drag this card to Confirm Delete to finish.</span></div>';
+ tray.innerHTML='<div class="data-card draft-card" draggable="true" data-card-type="pending-delete" data-record-id="'+esc(pendingDeletion.id)+'" data-source="'+esc(pendingDeletion.kind)+'" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG TO CONFIRM</span><strong>DELETION PENDING · '+esc(pendingDeletion.label)+'</strong><span>Nothing is deleted yet. Drag this card to Confirm Delete to finish.</span></div>';
 }
 function stageDeletion(kind,id,label){
  pendingDeletion={kind,id:String(id),label};
@@ -89,6 +89,7 @@ function stageDeletion(kind,id,label){
  $('pendingActionTray').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
 }
 function refreshArchiveCard(){
+ data.salvage.forEach(item=>{if(!item.id)item.id=uid()});
  const card=$('archiveCard');
  if(!card)return;
  card.dataset.cardType=pendingClear?'pending-clear':'archive';
@@ -100,18 +101,18 @@ function render(){
  const q=$('search').value.toLowerCase(),st=$('statusFilter').value,sort=$('sort').value;
  let p=data.projects.filter(x=>(!st||x.status===st)&&[x.name,x.description,x.cause,...(x.tags||[])].join(' ').toLowerCase().includes(q));
  p.sort(sort==='name'?((a,b)=>a.name.localeCompare(b.name)):sort==='progress'?((a,b)=>(b.progress||0)-(a.progress||0)):((a,b)=>new Date(b.lastActive||b.created)-new Date(a.lastActive||a.created)));
- $('projectGrid').innerHTML=p.length?p.map(x=>'<article class="card" draggable="true" data-card-type="project" data-record-id="'+esc(x.id)+'" tabindex="0" aria-label="Project card '+esc(x.name)+'. Drag to a project action zone."><div class="meta"><span class="tag">'+esc(x.status)+'</span><span>'+esc(x.cause||'Unknown cause')+'</span></div><h3>'+esc(x.name)+'</h3><p>'+esc(x.description||x.goal||'No epitaph written yet.')+'</p><div class="meta">'+(x.tags||[]).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div><div class="progress"><i style="width:'+Math.max(0,Math.min(100,Number(x.progress)||0))+'%"></i></div><small>'+Number(x.progress||0)+'% complete · '+(x.unfinished||[]).length+' unfinished tasks</small></article>').join(''):'<p class="intro">No projects in this corner of the graveyard. Bury a new idea above.</p>';
+ $('projectGrid').innerHTML=p.length?p.map(x=>'<article class="card" draggable="true" data-card-type="project" data-record-id="'+esc(x.id)+'" tabindex="0" aria-label="Project card '+esc(x.name)+'. Drag to a project action zone."><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG PROJECT</span><div class="meta"><span class="tag">'+esc(x.status)+'</span><span>'+esc(x.cause||'Unknown cause')+'</span></div><h3>'+esc(x.name)+'</h3><p>'+esc(x.description||x.goal||'No epitaph written yet.')+'</p><div class="meta">'+(x.tags||[]).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div><div class="progress"><i style="width:'+Math.max(0,Math.min(100,Number(x.progress)||0))+'%"></i></div><small>'+Number(x.progress||0)+'% complete · '+(x.unfinished||[]).length+' unfinished tasks</small></article>').join(''):'<p class="intro">No projects in this corner of the graveyard. Bury a new idea above.</p>';
  $('total').textContent=data.projects.length;$('salvageCount').textContent=data.salvage.length;$('revivalCount').textContent=data.projects.filter(x=>x.status==='Resurrecting').length;
  renderSalvage();renderAdoptions();refreshArchiveCard();
 }
 function renderSalvage(){
- $('salvageList').innerHTML=data.salvage.map((s,i)=>'<li draggable="true" data-card-type="salvage" data-record-id="'+esc(s.id||i)+'" data-index="'+i+'" tabindex="0" aria-label="Salvage card '+esc(s.name)+'. Drag to Remove Salvage."><strong>'+esc(s.name)+'</strong> — '+esc(s.source||'Unknown source')+'<br>'+esc(s.notes||'No notes')+'<br><span class="drag-hint">DRAG THIS ITEM TO REMOVE SALVAGE</span></li>').join('')||'<li>Nothing salvaged yet.</li>';
+ $('salvageList').innerHTML=data.salvage.map((s,i)=>'<li draggable="true" data-card-type="salvage" data-record-id="'+esc(s.id||i)+'" data-index="'+i+'" tabindex="0" aria-label="Salvage card '+esc(s.name)+'. Drag to Remove Salvage."><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG ITEM</span><strong>'+esc(s.name)+'</strong> — '+esc(s.source||'Unknown source')+'<br>'+esc(s.notes||'No notes')+'<br><span class="drag-hint">DRAG THIS ITEM TO REMOVE SALVAGE</span></li>').join('')||'<li>Nothing salvaged yet.</li>';
 }
 function renderAdoptions(){
  const q=($('adoptSearch').value||'').trim().toLowerCase();
  const rows=data.adoptions.filter(l=>[l.name,l.description,l.skills,l.handoff,l.author].join(' ').toLowerCase().includes(q));
  $('listingCount').textContent=data.adoptions.length;
- $('adoptionGrid').innerHTML=rows.map(l=>'<article class="card" draggable="true" data-card-type="adoption" data-record-id="'+esc(l.id)+'" tabindex="0" aria-label="Adoption listing '+esc(l.name)+'. Drag to a listing action zone."><div class="meta"><span class="tag">OPEN FOR ADOPTION</span><span>'+esc(l.difficulty||'Unspecified')+'</span></div><h3>'+esc(l.name)+'</h3><p>'+esc(l.description||'An unfinished idea looking for a second author.')+'</p><p><strong>Help needed:</strong> '+esc(l.skills||'Not specified')+'</p><p><strong>Handoff:</strong> '+esc(l.handoff||'No handoff notes yet.')+'</p><div class="meta"><span>'+Number(l.progress||0)+'% complete</span><span>By '+esc(l.author||'You')+'</span></div><small class="drag-hint">DRAG THIS LISTING TO AN ACTION ZONE</small></article>').join('');
+ $('adoptionGrid').innerHTML=rows.map(l=>'<article class="card" draggable="true" data-card-type="adoption" data-record-id="'+esc(l.id)+'" tabindex="0" aria-label="Adoption listing '+esc(l.name)+'. Drag to a listing action zone."><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG LISTING</span><div class="meta"><span class="tag">OPEN FOR ADOPTION</span><span>'+esc(l.difficulty||'Unspecified')+'</span></div><h3>'+esc(l.name)+'</h3><p>'+esc(l.description||'An unfinished idea looking for a second author.')+'</p><p><strong>Help needed:</strong> '+esc(l.skills||'Not specified')+'</p><p><strong>Handoff:</strong> '+esc(l.handoff||'No handoff notes yet.')+'</p><div class="meta"><span>'+Number(l.progress||0)+'% complete</span><span>By '+esc(l.author||'You')+'</span></div><small class="drag-hint">DRAG THIS LISTING TO AN ACTION ZONE</small></article>').join('');
  $('adoptionEmpty').classList.toggle('hidden',rows.length!==0);
  if(rows.length===0 && q)$('adoptionEmpty').innerHTML='<strong>No listings match that search.</strong><p class="intro">Clear the search to see your saved adoption drafts.</p>';
  else $('adoptionEmpty').innerHTML='<strong>No local adoption listings yet.</strong><p class="intro">Prepare one for an unfinished project, then choose whether to export it.</p>';
@@ -165,7 +166,7 @@ function makeEulogy(p){
 }
 function renderEulogy(){
  $('eulogyOutput').classList.remove('hidden');
- $('eulogyOutput').innerHTML='<article class="data-card" draggable="true" data-card-type="eulogy" tabindex="0"><strong>GENERATED EULOGY · DRAG TO COPY OR DOWNLOAD</strong><span style="white-space:pre-wrap">'+esc(generatedEulogy)+'</span></article>';
+ $('eulogyOutput').innerHTML='<article class="data-card" draggable="true" data-card-type="eulogy" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG EULOGY</span><strong>GENERATED EULOGY · DRAG TO COPY OR DOWNLOAD</strong><span style="white-space:pre-wrap">'+esc(generatedEulogy)+'</span></article>';
 }
 function removeProject(id){stageDeletion('project',id,project(id)?.name||'project')}
 function handleTimer(zone){
@@ -275,13 +276,13 @@ $('salvageForm').onsubmit=e=>{e.preventDefault();toast('To save, drag the Salvag
 $('seanceStatus').textContent=data.seance?'Saved reflection is loaded from this browser.':'';
 $('importFile').onchange=async e=>{
  const f=e.target.files?.[0];if(!f)return;
- try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.projects))throw Error('Archive JSON must contain a projects array.');pendingArchiveImport=d;$('archivePreview').classList.remove('hidden');$('archivePreview').innerHTML='<div class="data-card" draggable="true" data-card-type="archive-import-preview" tabindex="0"><strong>ARCHIVE IMPORT PREVIEW</strong><span>'+d.projects.length+' projects · '+(Array.isArray(d.salvage)?d.salvage.length:0)+' salvage parts · '+(Array.isArray(d.adoptions)?d.adoptions.length:0)+' adoption listings.</span><small>Drag this preview into Restore Archive to replace local data.</small></div>';toast('Archive preview ready. Nothing has been imported yet.')}
+ try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.projects))throw Error('Archive JSON must contain a projects array.');pendingArchiveImport=d;$('archivePreview').classList.remove('hidden');$('archivePreview').innerHTML='<div class="data-card" draggable="true" data-card-type="archive-import-preview" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG PREVIEW</span><strong>ARCHIVE IMPORT PREVIEW</strong><span>'+d.projects.length+' projects · '+(Array.isArray(d.salvage)?d.salvage.length:0)+' salvage parts · '+(Array.isArray(d.adoptions)?d.adoptions.length:0)+' adoption listings.</span><small>Drag this preview into Restore Archive to replace local data.</small></div>';toast('Archive preview ready. Nothing has been imported yet.')}
  catch(err){pendingArchiveImport=null;$('archivePreview').classList.add('hidden');toast('Archive import failed: '+err.message)}
  finally{e.target.value=''}
 };
 $('listingFile').onchange=async e=>{
  const f=e.target.files?.[0];if(!f)return;
- try{const raw=JSON.parse(await f.text());const incoming=Array.isArray(raw)?raw:(Array.isArray(raw.listings)?raw.listings:[raw]);const valid=incoming.filter(x=>x&&typeof x==='object'&&String(x.name||'').trim()&&String(x.description||'').trim());if(!valid.length)throw Error('JSON must contain a listing title and description.');pendingListingImport=valid;$('listingImportPreview').classList.remove('hidden');$('listingImportPreview').innerHTML='<div class="data-card" draggable="true" data-card-type="listing-import-preview" tabindex="0"><strong>LISTING IMPORT PREVIEW</strong><span>'+valid.length+' listing'+(valid.length===1?'':'s')+' ready to import.</span><small>Drag this preview to Import Listings. No listing has been saved yet.</small></div>';toast('Listing preview ready. Nothing has been imported yet.')}
+ try{const raw=JSON.parse(await f.text());const incoming=Array.isArray(raw)?raw:(Array.isArray(raw.listings)?raw.listings:[raw]);const valid=incoming.filter(x=>x&&typeof x==='object'&&String(x.name||'').trim()&&String(x.description||'').trim());if(!valid.length)throw Error('JSON must contain a listing title and description.');pendingListingImport=valid;$('listingImportPreview').classList.remove('hidden');$('listingImportPreview').innerHTML='<div class="data-card" draggable="true" data-card-type="listing-import-preview" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG PREVIEW</span><strong>LISTING IMPORT PREVIEW</strong><span>'+valid.length+' listing'+(valid.length===1?'':'s')+' ready to import.</span><small>Drag this preview to Import Listings. No listing has been saved yet.</small></div>';toast('Listing preview ready. Nothing has been imported yet.')}
  catch(err){pendingListingImport=null;$('listingImportPreview').classList.add('hidden');toast('Listing import failed: '+err.message)}
  finally{e.target.value=''}
 };
