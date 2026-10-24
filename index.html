@@ -170,7 +170,7 @@ function renderEulogy(){
 }
 function removeProject(id){stageDeletion('project',id,project(id)?.name||'project')}
 function handleTimer(zone){
- if(zone==='timer-start'){if(timerInterval)return;timerInterval=setInterval(()=>{seconds=Math.max(0,seconds-1);paintTimer();if(seconds<=0){clearInterval(timerInterval);timerInterval=null;toast('30-minute session complete. Write down what moved.')}},1000);toast('Timer started.');}
+ if(zone==='timer-start'){if(timerInterval)return;if(seconds<=0){seconds=1800;paintTimer()}timerInterval=setInterval(()=>{seconds=Math.max(0,seconds-1);paintTimer();if(seconds<=0){clearInterval(timerInterval);timerInterval=null;toast('30-minute session complete. Write down what moved.')}},1000);toast('Timer started.');}
  if(zone==='timer-pause'){if(timerInterval){clearInterval(timerInterval);timerInterval=null;toast('Timer paused.')}else toast('Timer is already paused.');}
  if(zone==='timer-reset'){if(timerInterval)clearInterval(timerInterval);timerInterval=null;seconds=1800;paintTimer();toast('Timer reset to 30:00.');}
 }
