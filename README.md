@@ -5,7 +5,7 @@ A responsive, local-first archive for unfinished projects. The site is built as 
 ## Run locally
 
 1. Download or clone this repository.
-2. Open `index (2).html` in a modern browser.
+2. Open `index.html` in a modern browser.
 
 Project records are stored in that browser's `localStorage`. They remain on the same browser and device unless you export a backup. Use the app's JSON export and import features to back up or restore your archive.
 
@@ -23,15 +23,15 @@ Project records are stored in that browser's `localStorage`. They remain on the 
 
 ## Files
 
-- `index (2).html` — the complete application: HTML, CSS, and JavaScript
+- `index.html` — the complete application: HTML, CSS, and JavaScript
 - `README.md` — setup and project information
 - `LICENSE` — Apache License 2.0
 
 No other files or dependencies are needed to run the app locally.
 
-## Hosting note
+## Hosting
 
-Static hosting providers commonly look for a file named `index.html` as the default homepage. This project intentionally keeps the requested filename `index (2).html`; when deploying it, configure the host to serve that file as the entry page, or use its direct URL if supported.
+The app now uses the standard `index.html` filename, so static hosting services such as GitHub Pages can detect it as the homepage entry point.
 
 ## Privacy
 
