@@ -198,12 +198,50 @@ dialog::backdrop{background:#000d}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.progress i{transition:none}}
 
+
+/* Reference landing-page composition and archive heading. */
+.landing-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);gap:clamp(1.3rem,3vw,3.3rem);align-items:center;padding:1.2rem 0 2rem;border-bottom:1px solid var(--line)}
+.landing-copy{min-width:0}
+.landing-copy .eyebrow{margin-bottom:1rem}
+.landing-copy h1{font-size:clamp(3.3rem,7.5vw,6.8rem);line-height:.89;margin:.4rem 0 1.3rem;letter-spacing:-.035em;color:var(--paper);-webkit-text-stroke:0}
+.landing-copy h1 span{color:var(--red);-webkit-text-stroke:0}
+.hero-action-note{font:800 .58rem/1.5 Arial,Helvetica,sans-serif;letter-spacing:.12em;color:var(--yellow);margin-top:1.5rem}
+.hero-visual{padding:1rem;border:1px solid var(--line);background:var(--panel);box-shadow:4px 5px 0 var(--red);min-width:0}
+.hero-note,.hero-visual-foot{font:800 .55rem/1.5 Arial,Helvetica,sans-serif;letter-spacing:.12em;color:var(--muted)}
+.hero-note{padding-bottom:.8rem;border-bottom:1px solid #414141}
+.hero-visual-foot{padding-top:.7rem;border-top:1px solid #414141;margin-top:.5rem}
+.hero-visual .card[data-card-type="project"]{margin:1rem auto .6rem;max-width:280px;min-height:280px}
+.hero-visual .card[data-card-type="project"]:after{display:none}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+.archive-heading{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin:2.4rem 0 .9rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
+.archive-heading h2{margin:.4rem 0 0;font-size:clamp(1.9rem,4vw,3.2rem);line-height:1}
+.archive-count{font:800 .65rem Arial,Helvetica,sans-serif;letter-spacing:.12em;color:var(--muted);white-space:nowrap;padding-bottom:.3rem}
+.card[data-card-type="project"] .tombstone-percent.status-dormant~.progress i{background:var(--yellow)}
+.card[data-card-type="project"] .tombstone-percent.status-resurrecting~.progress i{background:var(--red)}
+.card[data-card-type="project"] .tombstone-percent.status-adopted~.progress i{background:var(--muted)}
+@media(max-width:850px){
+ .landing-hero{grid-template-columns:minmax(0,1fr) minmax(220px,.75fr);gap:1rem}
+ .landing-copy h1{font-size:clamp(2.8rem,7.8vw,5rem)}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:580px){
+ .landing-hero{grid-template-columns:1fr;gap:1.4rem;padding-top:.6rem}
+ .landing-copy h1{font-size:clamp(3rem,12vw,4.3rem)}
+ .hero-visual{max-width:100%}
+ .hero-visual .card[data-card-type="project"]{max-width:260px;min-height:275px}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .archive-heading{margin-top:1.8rem}
+ .archive-heading h2{font-size:2rem}
+ .archive-count{font-size:.56rem}
+}
+
 </style>
 </head>
 <body>
 <header><div class="header-brand"><div class="brand">GRAVE<span>YARD</span></div><div class="local">● LOCAL-ONLY ARCHIVE · NO BACKEND</div></div><nav class="top-nav" aria-label="Main navigation"><a href="#projectGrid">ARCHIVE</a><a href="#salvageForm">SALVAGE</a><a href="#projectZones">ACTIONS</a><a href="#adoptionSection">ADOPTION</a><a href="#seance">SEANCE</a></nav><div class="actions header-actions" style="margin:0"><a class="header-action-link" href="#projectZones">ACTION ZONES</a><button class="secondary" id="openAdoption">Open Adoption (<span id="listingCount">0</span>)</button></div></header>
-<main><div class="eyebrow">A museum of almost</div><h1>GOOD IDEAS<br>DON’T <span>REST</span><br>IN PEACE.</h1><p class="intro">Every abandoned project left something behind. Archive the unfinished, salvage what still has a pulse, and give the next idea a better chance.</p>
-<div class="stats"><div class="stat"><strong id="total">0</strong><small>Projects buried</small></div><div class="stat"><strong id="salvageCount">0</strong><small>Parts salvaged</small></div><div class="stat"><strong id="revivalCount">0</strong><small>Back from the dead</small></div></div>
+<main><section class="landing-hero"><div class="landing-copy"><div class="eyebrow">THE PROJECT GRAVEYARD · A HOME FOR ALMOST</div><h1>EVERY IDEA<br><span>DESERVES</span><br>A SECOND LIFE.</h1><p class="intro">Log the projects you never finished, understand why they died, and decide what happens next. Not a task manager — a place for ideas to rest.</p><p class="hero-action-note">BURY · REMEMBER · DECIDE · ACT · REUSE · SHARE</p></div><aside class="hero-visual" aria-label="Featured project preview"><div class="hero-note">FEATURED FROM THE ARCHIVE</div><div id="heroProjectPreview"></div><div class="hero-visual-foot">A SECOND CHANCE STARTS WITH A RECORD.</div></aside></section>
+<div class="stats"><div class="stat"><strong id="total">0</strong><small>Projects buried</small></div><div class="stat"><strong id="revivalCount">0</strong><small>Resurrecting</small></div><div class="stat"><strong id="salvageCount">0</strong><small>Parts salvaged</small></div><div class="stat"><strong id="adoptionCount">0</strong><small>Listings saved</small></div></div>
+<div class="archive-heading"><div><div class="eyebrow">01 / THE GRAVEYARD</div><h2>THE ARCHIVE</h2></div><span class="archive-count" id="projectCountLabel">0 PROJECTS</span></div>
 <div class="toolbar"><input id="search" placeholder="Search names, tags, causes…"><select id="statusFilter"><option value="">All statuses</option><option>Dead</option><option>Dormant</option><option>Archived</option><option>Resurrecting</option><option>Adopted</option></select><select id="sort"><option value="recent">Recently active</option><option value="name">Name A–Z</option><option value="progress">Most complete</option></select><div class="drag-seed" draggable="true" data-card-type="new-project-seed" tabindex="0" aria-label="Drag to Create Project">＋ Bury a project <span data-drag-handle aria-hidden="true">⠿</span></div></div>
 <div class="zone-grid" id="projectZones" aria-label="Project action zones"><div class="drop-zone" data-zone="create-project" data-accept="new-project-seed" tabindex="0">DROP SEED · CREATE PROJECT</div><div class="drop-zone" data-zone="edit-project" data-accept="project" tabindex="0">DROP PROJECT · EDIT</div><div class="drop-zone" data-zone="prepare-listing" data-accept="project,listing-seed" tabindex="0">DROP CARD · PREPARE ADOPTION</div><div class="drop-zone" data-zone="revive-project" data-accept="project" tabindex="0">DROP PROJECT · REVIVE</div><div class="drop-zone" data-zone="generate-eulogy" data-accept="project" tabindex="0">DROP PROJECT · GENERATE EULOGY</div><div class="drop-zone" data-zone="delete-project" data-accept="project" tabindex="0">DROP PROJECT · STAGE DELETE</div><div class="drop-zone" data-zone="confirm-delete" data-accept="pending-delete" tabindex="0">DROP PENDING DELETE · CONFIRM</div><div class="drop-zone" data-zone="copy-text" data-accept="eulogy" tabindex="0">DROP EULOGY · COPY TEXT</div><div class="drop-zone" data-zone="download-text" data-accept="eulogy" tabindex="0">DROP EULOGY · DOWNLOAD TEXT</div></div>
 <div id="pendingActionTray" class="hidden"></div><div id="eulogyOutput" class="hidden"></div>
@@ -269,7 +307,9 @@ function render(){
  let p=data.projects.filter(x=>(!st||x.status===st)&&[x.name,x.description,x.cause,...(x.tags||[])].join(' ').toLowerCase().includes(q));
  p.sort(sort==='name'?((a,b)=>a.name.localeCompare(b.name)):sort==='progress'?((a,b)=>(b.progress||0)-(a.progress||0)):((a,b)=>new Date(b.lastActive||b.created)-new Date(a.lastActive||a.created)));
  $('projectGrid').innerHTML=p.length?p.map(x=>'<article class="card" draggable="true" data-card-type="project" data-record-id="'+esc(x.id)+'" tabindex="0" aria-label="Project card '+esc(x.name)+'. Drag to a project action zone."><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG PROJECT</span><div class="meta"><span class="tag status-badge status-'+esc(String(x.status||'dead').toLowerCase().replace(/\\s+/g,'-'))+'">'+esc(x.status)+'</span></div><div class="tombstone-percent status-'+esc(String(x.status||'dead').toLowerCase().replace(/\\s+/g,'-'))+'">'+Number(x.progress||0)+'%</div><h3>'+esc(x.name)+'</h3><p class="project-description">'+esc(x.description||x.goal||'No epitaph written yet.')+'</p><div class="meta tags-row">'+(x.tags||[]).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div><div class="progress"><i style="width:'+Math.max(0,Math.min(100,Number(x.progress)||0))+'%"></i></div><div class="grave-cause"><label>CAUSE OF DEATH</label><strong>'+esc(x.cause||'Unknown cause')+'</strong><span>'+Math.max(0,Math.floor((Date.now()-new Date(x.lastActive||x.created||Date.now()).getTime())/86400000))+'d</span></div><small class="unfinished-count">'+(x.unfinished||[]).length+' unfinished tasks</small></article>').join(''):'<p class="intro">No projects in this corner of the graveyard. Bury a new idea above.</p>';
- $('total').textContent=data.projects.length;$('salvageCount').textContent=data.salvage.length;$('revivalCount').textContent=data.projects.filter(x=>x.status==='Resurrecting').length;
+ $('total').textContent=data.projects.length;$('salvageCount').textContent=data.salvage.length;$('revivalCount').textContent=data.projects.filter(x=>x.status==='Resurrecting').length;$('adoptionCount').textContent=data.adoptions.length;$('projectCountLabel').textContent=data.projects.length+' PROJECT'+(data.projects.length===1?'':'S');
+ const featured=data.projects.find(x=>x.status==='Resurrecting')||data.projects[0];
+ $('heroProjectPreview').innerHTML=featured?'<article class="card" draggable="true" data-card-type="project" data-record-id="'+esc(featured.id)+'" tabindex="0" aria-label="Featured project '+esc(featured.name)+'"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG PROJECT</span><div class="meta"><span class="tag status-badge status-'+esc(String(featured.status||'dead').toLowerCase().replace(/\\s+/g,'-'))+'">'+esc(featured.status)+'</span></div><div class="tombstone-percent status-'+esc(String(featured.status||'dead').toLowerCase().replace(/\\s+/g,'-'))+'">'+Number(featured.progress||0)+'%</div><h3>'+esc(featured.name)+'</h3><p class="project-description">'+esc(featured.description||featured.goal||'A project waiting for another look.')+'</p><div class="grave-cause"><label>CAUSE OF DEATH</label><strong>'+esc(featured.cause||'Unknown cause')+'</strong><span>'+Math.max(0,Math.floor((Date.now()-new Date(featured.lastActive||featured.created||Date.now()).getTime())/86400000))+'d</span></div></article>':'<div class="data-card"><strong>NO PROJECTS YET</strong><span>Drag the Bury a Project seed to Create Project.</span></div>';
  renderSalvage();renderAdoptions();refreshArchiveCard();
 }
 function renderSalvage(){
