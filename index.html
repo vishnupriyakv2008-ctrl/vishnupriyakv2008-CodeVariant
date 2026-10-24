@@ -6,136 +6,276 @@
 <title>The Project Graveyard</title>
 <style>
 :root{color-scheme:dark;--bg:#11110f;--panel:#1a1a17;--paper:#e9e5d9;--muted:#9a978d;--red:#ff5a45;--yellow:#e9d66b;--line:#45443d;--green:#a9c6a1}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--paper);font:16px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--bg);padding:.7rem .9rem;font-weight:800}button:hover{background:var(--yellow)}button.secondary{background:transparent;color:var(--paper)}button.danger{background:var(--red);border-color:var(--red)}a{color:var(--yellow)}header{padding:1.2rem clamp(1rem,4vw,4rem);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap}.brand{font-size:.8rem;letter-spacing:.16em;text-transform:uppercase}.local{color:var(--green);font-size:.75rem}main{max-width:1200px;margin:auto;padding:clamp(1rem,4vw,3.5rem)}.eyebrow{color:var(--red);text-transform:uppercase;letter-spacing:.16em;font-size:.75rem;font-weight:bold}h1{font-size:clamp(3rem,10vw,7.6rem);line-height:.88;letter-spacing:-.09em;margin:.6rem 0 1.4rem;max-width:950px}h1 span{color:var(--red)}.intro{max-width:620px;color:var(--muted)}.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.5rem 0}.toolbar input{flex:1;min-width:200px}.toolbar input,.toolbar select,input,textarea,select{background:#121210;color:var(--paper);border:1px solid var(--line);padding:.7rem;width:100%}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin:2rem 0}.stat{border-top:2px solid var(--line);padding:1rem 0}.stat strong{font-size:2rem;display:block}.stat small{color:var(--muted);text-transform:uppercase;letter-spacing:.1em}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.card{border:1px solid var(--line);background:var(--panel);padding:1.1rem;min-width:0;position:relative}.card:before{content:"";display:block;width:34px;height:5px;background:var(--red);margin-bottom:1rem}.card h3{font-size:1.45rem;margin:.3rem 0}.card p{color:var(--muted);font-size:.88rem}.meta{display:flex;gap:.4rem;flex-wrap:wrap;font-size:.7rem;text-transform:uppercase}.tag{border:1px solid var(--line);padding:.15rem .4rem;color:var(--yellow)}.progress{height:5px;background:#393831;margin:.9rem 0}.progress i{display:block;background:var(--red);height:100%}.card-actions{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:1rem}.card-actions button{font-size:.75rem;padding:.45rem}.section{margin-top:3rem;border-top:1px solid var(--line);padding-top:1.4rem}.section h2{font-size:clamp(1.7rem,4vw,2.6rem);margin:.3rem 0 1rem;letter-spacing:-.05em}.panel{background:var(--panel);border:1px solid var(--line);padding:1.2rem}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}.field{display:flex;flex-direction:column;gap:.35rem}.field label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.field.full{grid-column:1/-1}.field textarea{min-height:90px;resize:vertical}.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.hidden{display:none!important}.list{padding-left:1.2rem;color:var(--muted)}.list li{margin:.35rem 0}.timer{font-size:2.5rem;font-weight:900}.footer{color:var(--muted);font-size:.75rem;margin-top:4rem;border-top:1px solid var(--line);padding-top:1rem}dialog{background:var(--bg);color:var(--paper);border:1px solid var(--line);width:min(700px,94vw);padding:1.5rem;max-height:90vh;overflow:auto}dialog::backdrop{background:#000b}.toast{position:fixed;bottom:1rem;right:1rem;background:var(--yellow);color:var(--bg);padding:.8rem 1rem;display:none;max-width:90vw}label.check{display:flex;gap:.6rem;align-items:center;margin:.4rem 0}label.check input{width:auto} @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){.grid,.stats,.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}header{align-items:flex-start}h1{font-size:19vw}.toolbar>*{width:100%}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Drag-and-drop interaction layer. Existing palette, typography and layout tokens are preserved. */
+.zone-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:1rem 0 1.3rem}
+.drop-zone{min-height:46px;display:flex;align-items:center;justify-content:center;text-align:center;padding:.65rem .7rem;border:1px dashed var(--line);background:transparent;color:var(--muted);font-size:.68rem;line-height:1.35;letter-spacing:.04em;font-weight:800;cursor:default;user-select:none}
+.drop-zone.is-over,.drop-zone:focus-visible{outline:2px solid var(--yellow);outline-offset:2px;border-color:var(--yellow);background:#e9d66b1a;color:var(--yellow)}
+.drop-zone.is-invalid{border-color:var(--red);color:var(--red)}
+.drag-seed{display:inline-flex;align-items:center;gap:.6rem;background:var(--paper);color:var(--bg);border:1px solid var(--line);padding:.7rem .9rem;font-weight:800;cursor:grab;user-select:none}
+.drag-seed span{font-size:1.1rem}
+.drag-seed:hover{background:var(--yellow)}
+.data-card{border:1px solid var(--line);background:var(--panel);padding:.8rem 1rem;display:flex;flex-direction:column;gap:.35rem;cursor:grab;user-select:none;touch-action:pan-y}
+.data-card strong{font-size:.75rem;letter-spacing:.09em;color:var(--yellow)}
+.data-card small,.data-card span{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.draft-card{border-style:dashed;margin:.7rem 0}
+.data-card:focus-visible,.drag-seed:focus-visible{outline:2px solid var(--yellow);outline-offset:3px}
+.card[data-card-type="project"],.card[data-card-type="adoption"],li[data-card-type="salvage"]{cursor:grab;touch-action:pan-y}
+.card[data-card-type="project"]::after,.card[data-card-type="adoption"]::after{content:"DRAG THIS CARD TO AN ACTION ZONE";display:block;margin-top:1rem;font-size:.62rem;color:var(--muted);letter-spacing:.08em}
+li[data-card-type="salvage"]{border:1px dashed var(--line);padding:.7rem;margin:.6rem 0;list-style:none}
+.file-picker{display:inline-flex;align-items:center;justify-content:center;padding:.7rem .9rem;border:1px solid var(--line);color:var(--paper);font-weight:800;font-size:.8rem;cursor:pointer}
+.file-picker:hover{border-color:var(--yellow);color:var(--yellow)}
+.drag-hint{font-size:.68rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.drag-ghost{position:fixed;z-index:99999;pointer-events:none;max-width:240px;opacity:.92;box-shadow:0 12px 36px #0009;border:1px solid var(--yellow);background:var(--panel);color:var(--paper);padding:.8rem 1rem;font:700 .78rem/1.4 ui-monospace,SFMono-Regular,Consolas,monospace}
+body.is-dragging{cursor:grabbing}
+@media(max-width:850px){.zone-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.zone-grid{grid-template-columns:1fr}.drag-seed,.file-picker{width:100%}}
+
 </style>
 </head>
 <body>
-<header><div><div class="brand">☠ The Project Graveyard</div><div class="local">● LOCAL-ONLY ARCHIVE · NO BACKEND</div></div><div class="actions" style="margin:0"><button class="secondary" id="openAdoption">Open Adoption (<span id="listingCount">0</span>)</button><button class="secondary" id="exportBtn">Export JSON</button><button class="secondary" id="importBtn">Import JSON</button><input id="importFile" type="file" accept=".json,application/json" hidden></div></header>
+<header><div><div class="brand">☠ The Project Graveyard</div><div class="local">● LOCAL-ONLY ARCHIVE · NO BACKEND</div></div><div class="actions" style="margin:0"><button class="secondary" id="openAdoption">Open Adoption (<span id="listingCount">0</span>)</button></div></header>
 <main><div class="eyebrow">A museum of almost</div><h1>GOOD IDEAS<br>DON’T <span>REST</span><br>IN PEACE.</h1><p class="intro">Every abandoned project left something behind. Archive the unfinished, salvage what still has a pulse, and give the next idea a better chance.</p>
 <div class="stats"><div class="stat"><strong id="total">0</strong><small>Projects buried</small></div><div class="stat"><strong id="salvageCount">0</strong><small>Parts salvaged</small></div><div class="stat"><strong id="revivalCount">0</strong><small>Back from the dead</small></div></div>
-<div class="toolbar"><input id="search" placeholder="Search names, tags, causes…"><select id="statusFilter"><option value="">All statuses</option><option>Dead</option><option>Dormant</option><option>Archived</option><option>Resurrecting</option><option>Adopted</option></select><select id="sort"><option value="recent">Recently active</option><option value="name">Name A–Z</option><option value="progress">Most complete</option></select><button id="newBtn">+ Bury a project</button></div>
+<div class="toolbar"><input id="search" placeholder="Search names, tags, causes…"><select id="statusFilter"><option value="">All statuses</option><option>Dead</option><option>Dormant</option><option>Archived</option><option>Resurrecting</option><option>Adopted</option></select><select id="sort"><option value="recent">Recently active</option><option value="name">Name A–Z</option><option value="progress">Most complete</option></select><div class="drag-seed" draggable="true" data-card-type="new-project-seed" tabindex="0" aria-label="Drag to Create Project">＋ Bury a project <span aria-hidden="true">⠿</span></div></div>
+<div class="zone-grid" id="projectZones" aria-label="Project action zones"><div class="drop-zone" data-zone="create-project" data-accept="new-project-seed" tabindex="0">DROP SEED · CREATE PROJECT</div><div class="drop-zone" data-zone="edit-project" data-accept="project" tabindex="0">DROP PROJECT · EDIT</div><div class="drop-zone" data-zone="prepare-listing" data-accept="project,listing-seed" tabindex="0">DROP CARD · PREPARE ADOPTION</div><div class="drop-zone" data-zone="revive-project" data-accept="project" tabindex="0">DROP PROJECT · REVIVE</div><div class="drop-zone" data-zone="generate-eulogy" data-accept="project" tabindex="0">DROP PROJECT · GENERATE EULOGY</div><div class="drop-zone" data-zone="delete-project" data-accept="project" tabindex="0">DROP PROJECT · DELETE</div><div class="drop-zone" data-zone="copy-text" data-accept="eulogy" tabindex="0">DROP EULOGY · COPY TEXT</div><div class="drop-zone" data-zone="download-text" data-accept="eulogy" tabindex="0">DROP EULOGY · DOWNLOAD TEXT</div></div>
+<div id="eulogyOutput" class="hidden"></div>
 <div id="projectGrid" class="grid"></div>
-<section class="section"><div class="eyebrow">01 / Revival chamber</div><h2>Nothing is ever entirely dead.</h2><div class="panel"><p>Pick one unfinished task. Make it smaller than your resistance. Give it 30 minutes, no grand comeback required.</p><div class="timer" id="timer">30:00</div><div class="actions"><button id="startTimer">Start 30 minutes</button><button id="resetTimer" class="secondary">Reset</button></div><p id="timerTip" class="intro">Your next move: open one old project and identify the smallest useful piece.</p></div></section>
-<section class="section"><div class="eyebrow">02 / Salvage yard</div><h2>Keep the useful bits.</h2><div class="panel"><form id="salvageForm" class="formgrid"><div class="field"><label for="partName">Reusable part</label><input id="partName" required placeholder="e.g. Authentication flow"></div><div class="field"><label for="partSource">From project</label><input id="partSource" placeholder="Project name"></div><div class="field full"><label for="partNotes">Why it’s worth saving</label><textarea id="partNotes" placeholder="A useful pattern, lesson, component…"></textarea></div><div class="field full"><button>Add to salvage yard</button></div></form><ul id="salvageList" class="list"></ul></div></section>
-<section class="section"><div class="eyebrow">03 / Seance notes</div><h2>Talk to your past self.</h2><div class="panel"><p class="intro">What was the original spark? What did you learn? What would make this worth reopening?</p><textarea id="seance" style="min-height:120px" placeholder="Leave a note for future you…"></textarea><div class="actions"><button id="saveSeance">Save reflection</button></div><p id="seanceStatus" class="intro"></p></div></section>
-<section class="section" id="adoptionSection"><div class="eyebrow">04 / Open adoption</div><h2>Give an unfinished idea a second life.</h2><p class="intro">Prepare a handoff listing and keep it in this browser. Nothing is published or shared unless you export it yourself.</p><div class="toolbar"><input id="adoptSearch" placeholder="Search local adoption listings…"><button id="createListing">+ Prepare a listing</button><button class="secondary" id="importListing">Import listing JSON</button><input id="listingFile" type="file" accept=".json,application/json" hidden></div><div id="adoptionGrid" class="grid"></div><div id="adoptionEmpty" class="panel hidden"><strong>No local adoption listings yet.</strong><p class="intro">Prepare one for an unfinished project, then choose whether to export it.</p></div></section>
-<section class="section"><div class="eyebrow">05 / The last rites</div><h2>Data belongs to you.</h2><p class="intro">Your archive lives in this browser’s local storage. Export JSON for a backup; import it on another browser to restore. Nothing is uploaded by this app.</p><div class="actions"><button id="exportBtn2">Export full archive</button><button id="clearBtn" class="danger">Clear local archive</button></div></section>
+<section class="section"><div class="eyebrow">01 / Revival chamber</div><h2>Nothing is ever entirely dead.</h2><div class="panel"><p>Pick one unfinished task. Make it smaller than your resistance. Give it 30 minutes, no grand comeback required.</p><div class="timer data-card" id="timer" draggable="true" data-card-type="timer" tabindex="0" aria-label="Timer card: drag to a timer action zone">30:00</div><p class="drag-hint">DRAG THE TIMER CARD TO A ZONE</p><div class="zone-grid"><div class="drop-zone" data-zone="timer-start" data-accept="timer" tabindex="0">DROP TIMER · START / RESUME</div><div class="drop-zone" data-zone="timer-pause" data-accept="timer" tabindex="0">DROP TIMER · PAUSE</div><div class="drop-zone" data-zone="timer-reset" data-accept="timer" tabindex="0">DROP TIMER · RESET</div></div><p id="timerTip" class="intro">Your next move: open one old project and identify the smallest useful piece.</p></div></section>
+<section class="section"><div class="eyebrow">02 / Salvage yard</div><h2>Keep the useful bits.</h2><div class="panel"><form id="salvageForm" class="formgrid"><div class="field"><label for="partName">Reusable part</label><input id="partName" required placeholder="e.g. Authentication flow"></div><div class="field"><label for="partSource">From project</label><input id="partSource" placeholder="Project name"></div><div class="field full"><label for="partNotes">Why it’s worth saving</label><textarea id="partNotes" placeholder="A useful pattern, lesson, component…"></textarea></div></form><div class="data-card draft-card" id="salvageDraftCard" draggable="true" data-card-type="salvage-draft" tabindex="0"><strong>SALVAGE DRAFT</strong><span id="salvageDraftPreview">Complete the fields above, then drag this card to Save Salvage.</span></div><div class="zone-grid"><div class="drop-zone" data-zone="save-salvage" data-accept="salvage-draft" tabindex="0">DROP DRAFT · SAVE SALVAGE</div><div class="drop-zone" data-zone="remove-salvage" data-accept="salvage" tabindex="0">DROP SALVAGE ITEM · REMOVE</div></div><ul id="salvageList" class="list"></ul></div></section>
+<section class="section"><div class="eyebrow">03 / Seance notes</div><h2>Talk to your past self.</h2><div class="panel"><p class="intro">What was the original spark? What did you learn? What would make this worth reopening?</p><textarea id="seance" style="min-height:120px" placeholder="Leave a note for future you…"></textarea><div class="data-card draft-card" id="reflectionDraftCard" draggable="true" data-card-type="reflection-draft" tabindex="0"><strong>REFLECTION DRAFT</strong><span id="reflectionDraftPreview">Write a reflection above, then drag this card to Save Reflection.</span></div><div class="zone-grid"><div class="drop-zone" data-zone="save-reflection" data-accept="reflection-draft" tabindex="0">DROP DRAFT · SAVE REFLECTION</div></div><p id="seanceStatus" class="intro"></p></div></section>
+<section class="section" id="adoptionSection"><div class="eyebrow">04 / Open adoption</div><h2>Give an unfinished idea a second life.</h2><p class="intro">Prepare a handoff listing and keep it in this browser. Nothing is published or shared unless you export it yourself.</p><div class="toolbar"><input id="adoptSearch" placeholder="Search local adoption listings…"><div class="drag-seed" draggable="true" data-card-type="listing-seed" tabindex="0" aria-label="Drag to Prepare Adoption">＋ Prepare a listing <span aria-hidden="true">⠿</span></div><label class="file-picker" for="listingFile">Choose listing JSON</label><input id="listingFile" type="file" accept=".json,application/json" hidden></div><div class="zone-grid" id="adoptionZones"><div class="drop-zone" data-zone="prepare-listing" data-accept="project,listing-seed" tabindex="0">DROP CARD · PREPARE LISTING</div><div class="drop-zone" data-zone="edit-listing" data-accept="adoption" tabindex="0">DROP LISTING · EDIT</div><div class="drop-zone" data-zone="export-listing" data-accept="adoption" tabindex="0">DROP LISTING · EXPORT JSON</div><div class="drop-zone" data-zone="remove-listing" data-accept="adoption" tabindex="0">DROP LISTING · REMOVE</div><div class="drop-zone" data-zone="import-listings" data-accept="listing-import-preview" tabindex="0">DROP PREVIEW · IMPORT LISTINGS</div></div><div id="listingImportPreview" class="hidden"></div><div id="adoptionGrid" class="grid"></div><div id="adoptionEmpty" class="panel hidden"><strong>No local adoption listings yet.</strong><p class="intro">Prepare one for an unfinished project, then choose whether to export it.</p></div></section>
+<section class="section"><div class="eyebrow">05 / The last rites</div><h2>Data belongs to you.</h2><p class="intro">Your archive lives in this browser’s local storage. Export JSON for a backup; import it on another browser to restore. Nothing is uploaded by this app.</p><div class="data-card" id="archiveCard" draggable="true" data-card-type="archive" tabindex="0"><strong>LOCAL ARCHIVE SNAPSHOT</strong><span id="archiveSummary">Projects, salvage parts, reflections and adoption listings.</span><small>Drag this archive card to an action zone below.</small></div><div class="zone-grid"><div class="drop-zone" data-zone="export-archive" data-accept="archive" tabindex="0">DROP ARCHIVE · EXPORT JSON</div><div class="drop-zone" data-zone="clear-archive" data-accept="archive" tabindex="0">DROP ARCHIVE · PREPARE CLEAR</div><div class="drop-zone" data-zone="confirm-clear" data-accept="pending-clear" tabindex="0">DROP PENDING ARCHIVE · CONFIRM CLEAR</div></div><div class="toolbar"><label class="file-picker" for="importFile">Choose archive JSON</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div id="archivePreview" class="hidden"></div></section>
 <div class="footer">THE PROJECT GRAVEYARD · BUILT FOR THE BEAUTIFUL FAILURE · PLAIN HTML, CSS & JAVASCRIPT</div></main>
-<dialog id="adoptionDialog"><form id="adoptionForm"><div class="eyebrow">Local handoff draft</div><h2 id="adoptionDialogTitle">Prepare an adoption listing</h2><input type="hidden" id="adoptionId"><div class="formgrid"><div class="field full"><label for="listingProject">Linked project (optional)</label><select id="listingProject"><option value="">No linked project</option></select></div><div class="field full"><label for="listingName">Listing title *</label><input id="listingName" required maxlength="100"></div><div class="field full"><label for="listingDescription">Public description *</label><textarea id="listingDescription" required></textarea></div><div class="field"><label for="listingSkills">Skills / help needed</label><input id="listingSkills" placeholder="Design, React, research…"></div><div class="field"><label for="listingDifficulty">Difficulty</label><select id="listingDifficulty"><option>Beginner</option><option>Intermediate</option><option>Hard</option></select></div><div class="field full"><label for="listingHandoff">Handoff notes</label><textarea id="listingHandoff" placeholder="Current state, unfinished tasks, setup notes…"></textarea></div><div class="field"><label for="listingAuthor">Credit / original author</label><input id="listingAuthor" value="You"></div><div class="field"><label for="listingProgress">Completion (%)</label><input id="listingProgress" type="number" min="0" max="100" value="0"></div></div><p class="intro">Save local listing stores this draft only in this browser. It does not publish it.</p><div class="actions"><button type="submit">Save local listing</button><button type="button" class="secondary" id="cancelListing">Cancel</button></div></form></dialog>
-<dialog id="projectDialog"><form id="projectForm"><div class="eyebrow">Archive record</div><h2 id="dialogTitle">Bury a project</h2><input type="hidden" id="projectId"><div class="formgrid"><div class="field"><label for="name">Project name *</label><input id="name" required maxlength="100"></div><div class="field"><label for="status">Status</label><select id="status"><option>Dead</option><option>Dormant</option><option>Archived</option><option>Resurrecting</option><option>Adopted</option></select></div><div class="field full"><label for="description">What was it?</label><textarea id="description"></textarea></div><div class="field full"><label for="goal">Original goal</label><textarea id="goal"></textarea></div><div class="field"><label for="cause">Cause of death</label><select id="cause"><option>Scope creep</option><option>Lost interest</option><option>No time</option><option>Tech blocker</option><option>Burnout</option><option>Better idea</option><option>Other</option></select></div><div class="field"><label for="progressInput">Progress (%)</label><input id="progressInput" type="number" min="0" max="100" value="0"></div><div class="field"><label for="tags">Tags (comma separated)</label><input id="tags" placeholder="design, web, learning"></div><div class="field"><label for="completed">Completed parts (one per line)</label><textarea id="completed"></textarea></div><div class="field"><label for="unfinished">Unfinished parts (one per line)</label><textarea id="unfinished"></textarea></div></div><div class="actions"><button type="submit">Save record</button><button type="button" class="secondary" id="cancelDialog">Cancel</button></div></form></dialog>
+<dialog id="adoptionDialog"><form id="adoptionForm"><div class="eyebrow">Local handoff draft</div><h2 id="adoptionDialogTitle">Prepare an adoption listing</h2><input type="hidden" id="adoptionId"><div class="formgrid"><div class="field full"><label for="listingProject">Linked project (optional)</label><select id="listingProject"><option value="">No linked project</option></select></div><div class="field full"><label for="listingName">Listing title *</label><input id="listingName" required maxlength="100"></div><div class="field full"><label for="listingDescription">Public description *</label><textarea id="listingDescription" required></textarea></div><div class="field"><label for="listingSkills">Skills / help needed</label><input id="listingSkills" placeholder="Design, React, research…"></div><div class="field"><label for="listingDifficulty">Difficulty</label><select id="listingDifficulty"><option>Beginner</option><option>Intermediate</option><option>Hard</option></select></div><div class="field full"><label for="listingHandoff">Handoff notes</label><textarea id="listingHandoff" placeholder="Current state, unfinished tasks, setup notes…"></textarea></div><div class="field"><label for="listingAuthor">Credit / original author</label><input id="listingAuthor" value="You"></div><div class="field"><label for="listingProgress">Completion (%)</label><input id="listingProgress" type="number" min="0" max="100" value="0"></div></div><p class="intro">Save local listing stores this draft only in this browser. It does not publish it.</p><div class="data-card draft-card" id="listingDraftCard" draggable="true" data-card-type="listing-draft" tabindex="0"><strong>ADOPTION LISTING DRAFT</strong><span id="listingDraftPreview">Complete the fields, then drag this card to Save Listing.</span></div><div class="zone-grid"><div class="drop-zone" data-zone="save-listing" data-accept="listing-draft" tabindex="0">DROP DRAFT · SAVE LOCAL LISTING</div><div class="drop-zone" data-zone="discard-listing" data-accept="listing-draft" tabindex="0">DROP DRAFT · DISCARD CHANGES</div></div><p class="drag-hint">Press Escape to close without saving.</p></form></dialog>
+<dialog id="projectDialog"><form id="projectForm"><div class="eyebrow">Archive record</div><h2 id="dialogTitle">Bury a project</h2><input type="hidden" id="projectId"><div class="formgrid"><div class="field"><label for="name">Project name *</label><input id="name" required maxlength="100"></div><div class="field"><label for="status">Status</label><select id="status"><option>Dead</option><option>Dormant</option><option>Archived</option><option>Resurrecting</option><option>Adopted</option></select></div><div class="field full"><label for="description">What was it?</label><textarea id="description"></textarea></div><div class="field full"><label for="goal">Original goal</label><textarea id="goal"></textarea></div><div class="field"><label for="cause">Cause of death</label><select id="cause"><option>Scope creep</option><option>Lost interest</option><option>No time</option><option>Tech blocker</option><option>Burnout</option><option>Better idea</option><option>Other</option></select></div><div class="field"><label for="progressInput">Progress (%)</label><input id="progressInput" type="number" min="0" max="100" value="0"></div><div class="field"><label for="tags">Tags (comma separated)</label><input id="tags" placeholder="design, web, learning"></div><div class="field"><label for="completed">Completed parts (one per line)</label><textarea id="completed"></textarea></div><div class="field"><label for="unfinished">Unfinished parts (one per line)</label><textarea id="unfinished"></textarea></div></div><div class="data-card draft-card" id="projectDraftCard" draggable="true" data-card-type="project-draft" tabindex="0"><strong>PROJECT DRAFT</strong><span id="projectDraftPreview">Complete the fields, then drag this card to Save Project.</span></div><div class="zone-grid"><div class="drop-zone" data-zone="save-project" data-accept="project-draft" tabindex="0">DROP DRAFT · SAVE PROJECT</div><div class="drop-zone" data-zone="discard-project" data-accept="project-draft" tabindex="0">DROP DRAFT · DISCARD CHANGES</div></div><p class="drag-hint">Press Escape to close without saving.</p></form></dialog>
 <div class="toast" id="toast" role="status"></div>
 <script>
 (()=>{'use strict';
-const KEY='project-graveyard-local-v1';const $=id=>document.getElementById(id);let timerInterval=null,seconds=1800;
+const KEY='project-graveyard-local-v1';
+const $=id=>document.getElementById(id);
+let timerInterval=null,seconds=1800,activeDrag=null,pointerDrag=null,pointerGhost=null,keyboardDrag=null;
+let pendingArchiveImport=null,pendingListingImport=null,pendingClear=false,generatedEulogy='';
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
 const sampleProjects=()=>[{id:uid(),name:'HabitHaunt',description:'A habit tracker with gentle streaks and weekly reflections.',goal:'Make habits feel gentle. Streaks that forgive, a Sunday reflection, nothing that shouts.',status:'Dead',cause:'Scope creep',progress:62,tags:['mobile','habits','react'],completed:['Auth and onboarding','Habit CRUD','Streak calculation','Dark mode'],unfinished:['Streak card UI','Cloud sync','Push reminders','Home-screen widget'],created:new Date().toISOString(),lastActive:new Date().toISOString(),notes:[]},{id:uid(),name:'RecipeRot',description:'A recipe manager meant to make weeknight cooking less chaotic.',goal:'Help people cook with what they already have.',status:'Dormant',cause:'Lost interest',progress:40,tags:['food','design','search'],completed:['Recipe editor','Ingredient list','Basic search'],unfinished:['Pantry matching','Shopping list','Mobile layout'],created:new Date().toISOString(),lastActive:new Date().toISOString(),notes:[]},{id:uid(),name:'PixelPantry',description:'A pixel-art inventory game for collecting tiny treasures.',goal:'Make inventory management feel like finding a secret room.',status:'Dead',cause:'No time',progress:25,tags:['game','pixel-art'],completed:['Pixel palette','Item schema'],unfinished:['Sprite sheet','Save system','Inventory interactions'],created:new Date().toISOString(),lastActive:new Date().toISOString(),notes:[]},{id:uid(),name:'NoteNecro',description:'Markdown notes with sync, tags and a search that remembers.',goal:'A quiet home for notes that works the way my brain does.',status:'Resurrecting',cause:'Tech blocker',progress:80,tags:['notes','markdown'],completed:['Markdown editor','Local save','Tags'],unfinished:['Sync','Search','Import/export'],created:new Date().toISOString(),lastActive:new Date().toISOString(),notes:[]}];
 let data=load();
-function load(){try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);if(d&&Array.isArray(d.projects))return {projects:d.projects,salvage:d.salvage||[],seance:d.seance||'',adoptions:Array.isArray(d.adoptions)?d.adoptions:[]}}}catch(e){}return {projects:sampleProjects(),salvage:[],seance:'',adoptions:[]}}
+function load(){try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);if(d&&Array.isArray(d.projects))return {projects:d.projects,salvage:Array.isArray(d.salvage)?d.salvage:[],seance:typeof d.seance==='string'?d.seance:'',adoptions:Array.isArray(d.adoptions)?d.adoptions:[]}}}catch(e){}return {projects:sampleProjects(),salvage:[],seance:'',adoptions:[]}}
 function project(id){return data.projects.find(p=>p.id===id)||null}
 function save(){localStorage.setItem(KEY,JSON.stringify({...data,schemaVersion:1,updatedAt:new Date().toISOString()}))}
-function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500)}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'" :'&#39;'}[c]))}
-function render(){const q=$('search').value.toLowerCase(),st=$('statusFilter').value,sort=$('sort').value;let p=data.projects.filter(x=>(!st||x.status===st)&&[x.name,x.description,x.cause,...(x.tags||[])].join(' ').toLowerCase().includes(q));p.sort(sort==='name'?((a,b)=>a.name.localeCompare(b.name)):sort==='progress'?((a,b)=>(b.progress||0)-(a.progress||0)):((a,b)=>new Date(b.lastActive||b.created)-new Date(a.lastActive||a.created)));$('projectGrid').innerHTML=p.length?p.map(x=>'<article class="card"><div class="meta"><span class="tag">'+esc(x.status)+'</span><span>'+esc(x.cause||'Unknown cause')+'</span></div><h3>'+esc(x.name)+'</h3><p>'+esc(x.description||x.goal||'No epitaph written yet.')+'</p><div class="meta">'+(x.tags||[]).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div><div class="progress"><i style="width:'+Math.max(0,Math.min(100,Number(x.progress)||0))+'%"></i></div><small>'+Number(x.progress||0)+'% complete · '+(x.unfinished||[]).length+' unfinished tasks</small><div class="card-actions"><button data-edit="'+x.id+'">Edit record</button><button class="secondary" data-listing="'+x.id+'">Adopt</button><button class="secondary" data-revive="'+x.id+'">Revive</button><button class="secondary" data-eulogy="'+x.id+'">Eulogy</button><button class="danger" data-delete="'+x.id+'">Delete</button></div></article>').join(''):'<p class="intro">No projects in this corner of the graveyard. Bury a new idea above.</p>';$('total').textContent=data.projects.length;$('salvageCount').textContent=data.salvage.length;$('revivalCount').textContent=data.projects.filter(x=>x.status==='Resurrecting').length;renderSalvage();renderAdoptions()}
-function renderSalvage(){$('salvageList').innerHTML=data.salvage.map((s,i)=>'<li><strong>'+esc(s.name)+'</strong> — '+esc(s.source||'Unknown source')+'<br>'+esc(s.notes||'No notes')+' <button class="secondary" data-salvage-delete="'+i+'">Remove</button></li>').join('')||'<li>Nothing salvaged yet.</li>'}
-function openProject(p){$('projectForm').reset();$('projectId').value=p?.id||'';$('dialogTitle').textContent=p?'Edit project':'Bury a project';$('name').value=p?.name||'';$('description').value=p?.description||'';$('goal').value=p?.goal||'';$('status').value=p?.status||'Dead';$('cause').value=p?.cause||'Scope creep';$('progressInput').value=p?.progress||0;$('tags').value=(p?.tags||[]).join(', ');$('completed').value=(p?.completed||[]).join('\n');$('unfinished').value=(p?.unfinished||[]).join('\n');$('projectDialog').showModal()}
-$('newBtn').onclick=()=>openProject();$('cancelDialog').onclick=()=>$('projectDialog').close();
-$('projectForm').onsubmit=e=>{e.preventDefault();const id=$('projectId').value;const old=data.projects.find(x=>x.id===id);const p={...(old||{}),id:id||uid(),name:$('name').value.trim(),description:$('description').value.trim(),goal:$('goal').value.trim(),status:$('status').value,cause:$('cause').value,progress:Math.max(0,Math.min(100,Number($('progressInput').value)||0)),tags:$('tags').value.split(',').map(x=>x.trim()).filter(Boolean),completed:$('completed').value.split('\n').map(x=>x.trim()).filter(Boolean),unfinished:$('unfinished').value.split('\n').map(x=>x.trim()).filter(Boolean),created:old?.created||new Date().toISOString(),lastActive:new Date().toISOString(),notes:old?.notes||[]};if(old)data.projects=data.projects.map(x=>x.id===id?p:x);else data.projects.unshift(p);save();render();$('projectDialog').close();toast('Record saved.')};
-$('projectGrid').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id=b.dataset.edit||b.dataset.revive||b.dataset.eulogy||b.dataset.delete||b.dataset.listing;const p=data.projects.find(x=>x.id===id);if(b.dataset.listing){openListing(p);return}if(!p)return;if(b.dataset.edit)openProject(p);if(b.dataset.revive){p.status='Resurrecting';p.lastActive=new Date().toISOString();save();render();$('timerTip').textContent='Next move for '+p.name+': '+(p.unfinished?.[0]||'write down one small next step');toast('Project marked for revival.')}if(b.dataset.eulogy){const text='IN MEMORY OF '+p.name+'\n\n'+(p.description||'An idea that mattered.')+'\n\nOriginal goal: '+(p.goal||'Not recorded')+'\nCause: '+(p.cause||'Unknown')+'\nCompleted: '+(p.completed||[]).join(', ')+'\nLessons live on.';if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>toast('Eulogy copied.')).catch(()=>prompt('Copy this eulogy',text));else prompt('Copy this eulogy',text)}if(b.dataset.delete&&confirm('Delete '+p.name+' from this browser? This cannot be undone.')){data.projects=data.projects.filter(x=>x.id!==id);save();render();toast('Project removed.')}}
-$('search').oninput=render;$('statusFilter').onchange=render;$('sort').onchange=render;
-function exportData(){const blob=new Blob([JSON.stringify({...data,schemaVersion:1,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='project-graveyard-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Archive exported.')}
-$('exportBtn').onclick=exportData;$('exportBtn2').onclick=exportData;$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.projects))throw Error('Missing projects array');if(!confirm('Import and replace your current local archive?'))return;data={projects:d.projects,salvage:d.salvage||[],seance:d.seance||'',adoptions:Array.isArray(d.adoptions)?d.adoptions:[]};save();render();$('seance').value=data.seance;toast('Archive imported.')}catch(err){alert('Could not import this JSON: '+err.message)}e.target.value=''};
-$('salvageForm').onsubmit=e=>{e.preventDefault();data.salvage.unshift({name:$('partName').value.trim(),source:$('partSource').value.trim(),notes:$('partNotes').value.trim()});save();renderSalvage();$('salvageForm').reset();$('salvageCount').textContent=data.salvage.length;toast('Part salvaged.')};
-$('salvageList').onclick=e=>{const b=e.target.closest('[data-salvage-delete]');if(!b)return;data.salvage.splice(Number(b.dataset.salvageDelete),1);save();renderSalvage();$('salvageCount').textContent=data.salvage.length};
-$('seance').value=data.seance;$('saveSeance').onclick=()=>{data.seance=$('seance').value;save();$('seanceStatus').textContent='Reflection saved in this browser.';toast('Note saved.')};
-
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(t._hideTimer);t._hideTimer=setTimeout(()=>t.style.display='none',2700)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function cardMeta(type,id=''){return {type,id:String(id||'')}}
+function dragPayload(el){return {type:el?.dataset.cardType||'',id:el?.dataset.recordId||'',source:el?.dataset.source||''}}
+function accepts(zone,card){return !!zone&&!!card&&zone.dataset.accept.split(',').map(x=>x.trim()).includes(card.type)}
+function allZones(){return [...document.querySelectorAll('.drop-zone')]}
+function clearZoneStates(){allZones().forEach(z=>z.classList.remove('is-over','is-invalid'))}
+function updateDraftPreview(kind){
+ if(kind==='project'){const n=$('name').value.trim()||'Untitled project';$('projectDraftPreview').textContent=n+' · '+$('status').value+' · drag this draft to Save Project.'}
+ if(kind==='listing'){const n=$('listingName').value.trim()||'Untitled adoption listing';$('listingDraftPreview').textContent=n+' · '+($('listingDescription').value.trim()?'description ready':'description required')+' · drag this draft to Save Listing.'}
+ if(kind==='salvage'){$('salvageDraftPreview').textContent=($('partName').value.trim()||'Unnamed reusable part')+' · '+($('partSource').value.trim()||'Unknown source')+' · drag this draft to Save Salvage.'}
+ if(kind==='reflection'){$('reflectionDraftPreview').textContent=$('seance').value.trim().slice(0,180)||'No reflection written yet. Drag this card to Save Reflection when ready.'}
+}
+function refreshArchiveCard(){
+ const card=$('archiveCard');
+ if(!card)return;
+ card.dataset.cardType=pendingClear?'pending-clear':'archive';
+ $('archiveSummary').textContent=data.projects.length+' projects · '+data.salvage.length+' salvage parts · '+(data.seance.trim()?'reflection saved':'no reflection')+' · '+data.adoptions.length+' adoption listings.';
+ card.querySelector('small').textContent=pendingClear?'PENDING DELETION · Drag again to Confirm Clear Archive.':'Drag this archive card to an action zone below.';
+ card.classList.toggle('pending-clear',pendingClear);
+}
+function render(){
+ const q=$('search').value.toLowerCase(),st=$('statusFilter').value,sort=$('sort').value;
+ let p=data.projects.filter(x=>(!st||x.status===st)&&[x.name,x.description,x.cause,...(x.tags||[])].join(' ').toLowerCase().includes(q));
+ p.sort(sort==='name'?((a,b)=>a.name.localeCompare(b.name)):sort==='progress'?((a,b)=>(b.progress||0)-(a.progress||0)):((a,b)=>new Date(b.lastActive||b.created)-new Date(a.lastActive||a.created)));
+ $('projectGrid').innerHTML=p.length?p.map(x=>'<article class="card" draggable="true" data-card-type="project" data-record-id="'+esc(x.id)+'" tabindex="0" aria-label="Project card '+esc(x.name)+'. Drag to a project action zone."><div class="meta"><span class="tag">'+esc(x.status)+'</span><span>'+esc(x.cause||'Unknown cause')+'</span></div><h3>'+esc(x.name)+'</h3><p>'+esc(x.description||x.goal||'No epitaph written yet.')+'</p><div class="meta">'+(x.tags||[]).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div><div class="progress"><i style="width:'+Math.max(0,Math.min(100,Number(x.progress)||0))+'%"></i></div><small>'+Number(x.progress||0)+'% complete · '+(x.unfinished||[]).length+' unfinished tasks</small></article>').join(''):'<p class="intro">No projects in this corner of the graveyard. Bury a new idea above.</p>';
+ $('total').textContent=data.projects.length;$('salvageCount').textContent=data.salvage.length;$('revivalCount').textContent=data.projects.filter(x=>x.status==='Resurrecting').length;
+ renderSalvage();renderAdoptions();refreshArchiveCard();
+}
+function renderSalvage(){
+ $('salvageList').innerHTML=data.salvage.map((s,i)=>'<li draggable="true" data-card-type="salvage" data-record-id="'+esc(s.id||i)+'" data-index="'+i+'" tabindex="0" aria-label="Salvage card '+esc(s.name)+'. Drag to Remove Salvage."><strong>'+esc(s.name)+'</strong> — '+esc(s.source||'Unknown source')+'<br>'+esc(s.notes||'No notes')+'<br><span class="drag-hint">DRAG THIS ITEM TO REMOVE SALVAGE</span></li>').join('')||'<li>Nothing salvaged yet.</li>';
+}
 function renderAdoptions(){
  const q=($('adoptSearch').value||'').trim().toLowerCase();
- const rows=(data.adoptions||[]).filter(l=>[l.name,l.description,l.skills,l.handoff,l.author].join(' ').toLowerCase().includes(q));
- $('listingCount').textContent=(data.adoptions||[]).length;
- $('adoptionGrid').innerHTML=rows.map(l=>'<article class="card"><div class="meta"><span class="tag">OPEN FOR ADOPTION</span><span>'+esc(l.difficulty||'Unspecified')+'</span></div><h3>'+esc(l.name)+'</h3><p>'+esc(l.description||'An unfinished idea looking for a second author.')+'</p><p><strong>Help needed:</strong> '+esc(l.skills||'Not specified')+'</p><p><strong>Handoff:</strong> '+esc(l.handoff||'No handoff notes yet.')+'</p><div class="meta"><span>'+Number(l.progress||0)+'% complete</span><span>By '+esc(l.author||'You')+'</span></div><div class="card-actions"><button data-edit-listing="'+esc(l.id)+'">Edit</button><button class="secondary" data-export-listing="'+esc(l.id)+'">Export JSON</button><button class="danger" data-delete-listing="'+esc(l.id)+'">Remove</button></div></article>').join('');
+ const rows=data.adoptions.filter(l=>[l.name,l.description,l.skills,l.handoff,l.author].join(' ').toLowerCase().includes(q));
+ $('listingCount').textContent=data.adoptions.length;
+ $('adoptionGrid').innerHTML=rows.map(l=>'<article class="card" draggable="true" data-card-type="adoption" data-record-id="'+esc(l.id)+'" tabindex="0" aria-label="Adoption listing '+esc(l.name)+'. Drag to a listing action zone."><div class="meta"><span class="tag">OPEN FOR ADOPTION</span><span>'+esc(l.difficulty||'Unspecified')+'</span></div><h3>'+esc(l.name)+'</h3><p>'+esc(l.description||'An unfinished idea looking for a second author.')+'</p><p><strong>Help needed:</strong> '+esc(l.skills||'Not specified')+'</p><p><strong>Handoff:</strong> '+esc(l.handoff||'No handoff notes yet.')+'</p><div class="meta"><span>'+Number(l.progress||0)+'% complete</span><span>By '+esc(l.author||'You')+'</span></div><small class="drag-hint">DRAG THIS LISTING TO AN ACTION ZONE</small></article>').join('');
  $('adoptionEmpty').classList.toggle('hidden',rows.length!==0);
- if(rows.length===0 && q) $('adoptionEmpty').innerHTML='<strong>No listings match that search.</strong><p class="intro">Clear the search to see your saved adoption drafts.</p>';
+ if(rows.length===0 && q)$('adoptionEmpty').innerHTML='<strong>No listings match that search.</strong><p class="intro">Clear the search to see your saved adoption drafts.</p>';
  else $('adoptionEmpty').innerHTML='<strong>No local adoption listings yet.</strong><p class="intro">Prepare one for an unfinished project, then choose whether to export it.</p>';
 }
-function openListing(linkedProject=null, existing=null){
- const l=existing||null;
- $('adoptionForm').reset();
- $('adoptionId').value=l?.id||'';
- $('adoptionDialogTitle').textContent=l?'Edit adoption listing':'Prepare an adoption listing';
- const sel=$('listingProject');
- sel.innerHTML='<option value="">No linked project</option>'+data.projects.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
- const p=project(l?.projectId||linkedProject?.id||'');
- sel.value=p?.id||'';
- $('listingName').value=l?.name||linkedProject?.name||'';
- $('listingDescription').value=l?.description||linkedProject?.description||linkedProject?.goal||'';
- $('listingSkills').value=l?.skills||(linkedProject?.tags||[]).join(', ')||'';
- $('listingDifficulty').value=l?.difficulty||'Intermediate';
- $('listingHandoff').value=l?.handoff||(linkedProject?.unfinished||[]).join('\n')||'';
- $('listingAuthor').value=l?.author||linkedProject?.author||'You';
- $('listingProgress').value=l?.progress??linkedProject?.progress??0;
- $('adoptionDialog').showModal();
+function readProjectForm(){
+ const id=$('projectId').value,old=project(id);
+ return {...(old||{}),id:id||uid(),name:$('name').value.trim(),description:$('description').value.trim(),goal:$('goal').value.trim(),status:$('status').value,cause:$('cause').value,progress:Math.max(0,Math.min(100,Number($('progressInput').value)||0)),tags:$('tags').value.split(',').map(x=>x.trim()).filter(Boolean),completed:$('completed').value.split('\n').map(x=>x.trim()).filter(Boolean),unfinished:$('unfinished').value.split('\n').map(x=>x.trim()).filter(Boolean),created:old?.created||new Date().toISOString(),lastActive:new Date().toISOString(),notes:old?.notes||[]};
 }
-function downloadJSON(filename, value){
- const blob=new Blob([JSON.stringify(value,null,2)],{type:'application/json'});
- const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),0);
+function openProject(p){
+ $('projectForm').reset();$('projectId').value=p?.id||'';$('dialogTitle').textContent=p?'Edit project':'Bury a project';
+ $('name').value=p?.name||'';$('description').value=p?.description||'';$('goal').value=p?.goal||'';$('status').value=p?.status||'Dead';$('cause').value=p?.cause||'Scope creep';$('progressInput').value=p?.progress||0;$('tags').value=(p?.tags||[]).join(', ');$('completed').value=(p?.completed||[]).join('\n');$('unfinished').value=(p?.unfinished||[]).join('\n');
+ updateDraftPreview('project');$('projectDialog').showModal();
 }
-$('openAdoption').onclick=()=>{ $('adoptionSection').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}); $('adoptSearch').focus({preventScroll:true}); };
-$('createListing').onclick=()=>openListing();
-$('cancelListing').onclick=()=>$('adoptionDialog').close();
-$('listingProject').onchange=()=>{
- const p=project($('listingProject').value);
- if(!p)return;
- if(!$('listingName').value.trim())$('listingName').value=p.name;
- if(!$('listingDescription').value.trim())$('listingDescription').value=p.description||p.goal||'';
- if(!$('listingSkills').value.trim())$('listingSkills').value=(p.tags||[]).join(', ');
- if(!$('listingHandoff').value.trim())$('listingHandoff').value=(p.unfinished||[]).join('\n');
- if(!$('listingProgress').value||Number($('listingProgress').value)===0)$('listingProgress').value=p.progress||0;
+function saveProjectDraft(){
+ const p=readProjectForm();
+ if(!p.name){toast('Add a project name before saving the draft.');$('name').focus();return}
+ const editing=!!$('projectId').value;
+ if(editing)data.projects=data.projects.map(x=>x.id===p.id?p:x);else data.projects.unshift(p);
+ try{save()}catch(e){toast('Could not save the project. Browser storage may be full.');return}
+ $('projectDialog').close();render();toast(editing?'Project changes saved.':'Project buried in the archive.');
+}
+function readListingForm(){
+ const id=$('adoptionId').value,old=data.adoptions.find(x=>x.id===id),projectId=$('listingProject').value;
+ return {id:id||uid(),projectId:projectId||null,name:$('listingName').value.trim(),description:$('listingDescription').value.trim(),skills:$('listingSkills').value.trim(),difficulty:$('listingDifficulty').value,handoff:$('listingHandoff').value.trim(),author:$('listingAuthor').value.trim()||'You',progress:Math.max(0,Math.min(100,Number($('listingProgress').value)||0)),created:old?.created||new Date().toISOString(),updatedAt:new Date().toISOString()};
+}
+function openListing(linkedProject=null,existing=null){
+ const l=existing||null;$('adoptionForm').reset();$('adoptionId').value=l?.id||'';$('adoptionDialogTitle').textContent=l?'Edit adoption listing':'Prepare an adoption listing';
+ const sel=$('listingProject');sel.innerHTML='<option value="">No linked project</option>'+data.projects.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
+ const p=project(l?.projectId||linkedProject?.id||'');sel.value=p?.id||'';
+ $('listingName').value=l?.name||linkedProject?.name||'';$('listingDescription').value=l?.description||linkedProject?.description||linkedProject?.goal||'';
+ $('listingSkills').value=l?.skills||(linkedProject?.tags||[]).join(', ')||'';$('listingDifficulty').value=l?.difficulty||'Intermediate';$('listingHandoff').value=l?.handoff||(linkedProject?.unfinished||[]).join('\n')||'';
+ $('listingAuthor').value=l?.author||linkedProject?.author||'You';$('listingProgress').value=l?.progress??linkedProject?.progress??0;
+ updateDraftPreview('listing');$('adoptionDialog').showModal();
+}
+function saveListingDraft(){
+ const d=readListingForm();
+ if(!d.name||!d.description){toast('Add a listing title and public description before saving.');if(!d.name)$('listingName').focus();else $('listingDescription').focus();return}
+ const index=data.adoptions.findIndex(x=>x.id===d.id);
+ if(index>=0)data.adoptions[index]=d;else data.adoptions.unshift(d);
+ const p=project(d.projectId);if(p)p.listing=d;
+ try{save()}catch(e){toast('Could not save the listing. Browser storage may be full.');return}
+ $('adoptionDialog').close();renderAdoptions();refreshArchiveCard();toast('Local adoption listing saved. Nothing was published.');
+}
+function downloadBlob(filename,content,type='application/json'){
+ const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),0);
+}
+function exportArchive(){downloadBlob('project-graveyard-backup.json',JSON.stringify({...data,schemaVersion:1,exportedAt:new Date().toISOString()},null,2));toast('Archive JSON exported.')}
+function makeEulogy(p){
+ return 'IN MEMORY OF '+p.name+'\n\n'+(p.description||'An idea that mattered.')+'\n\nOriginal goal: '+(p.goal||'Not recorded')+'\nCause: '+(p.cause||'Unknown')+'\nCompleted: '+(p.completed||[]).join(', ')+'\nUnfinished: '+(p.unfinished||[]).join(', ')+'\n\nLessons live on.';
+}
+function renderEulogy(){
+ $('eulogyOutput').classList.remove('hidden');
+ $('eulogyOutput').innerHTML='<article class="data-card" draggable="true" data-card-type="eulogy" tabindex="0"><strong>GENERATED EULOGY · DRAG TO COPY OR DOWNLOAD</strong><span style="white-space:pre-wrap">'+esc(generatedEulogy)+'</span></article>';
+}
+function removeProject(id){
+ const p=project(id);if(!p)return;
+ if(!confirm('Delete '+p.name+' from this browser? This cannot be undone.'))return;
+ data.projects=data.projects.filter(x=>x.id!==id);data.adoptions=data.adoptions.filter(l=>l.projectId!==id);
+ save();render();toast('Project removed from the local archive.');
+}
+function handleTimer(zone){
+ if(zone==='timer-start'){if(timerInterval)return;timerInterval=setInterval(()=>{seconds=Math.max(0,seconds-1);paintTimer();if(seconds<=0){clearInterval(timerInterval);timerInterval=null;toast('30-minute session complete. Write down what moved.')}},1000);toast('Timer started.');}
+ if(zone==='timer-pause'){if(timerInterval){clearInterval(timerInterval);timerInterval=null;toast('Timer paused.')}else toast('Timer is already paused.');}
+ if(zone==='timer-reset'){if(timerInterval)clearInterval(timerInterval);timerInterval=null;seconds=1800;paintTimer();toast('Timer reset to 30:00.');}
+}
+function paintTimer(){$('timer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
+async function handleDrop(card,zone){
+ if(!accepts(zone,card)){zone.classList.add('is-invalid');toast('That card cannot be dropped into this zone.');setTimeout(()=>zone.classList.remove('is-invalid'),900);return}
+ const id=card.id,record=project(id);
+ switch(zone.dataset.zone){
+  case 'create-project':openProject(null);break;
+  case 'edit-project':if(record)openProject(record);break;
+  case 'prepare-listing':if(card.type==='listing-seed')openListing();else if(record)openListing(record);break;
+  case 'revive-project':if(record){record.status='Resurrecting';record.lastActive=new Date().toISOString();save();render();$('timerTip').textContent='Next move for '+record.name+': '+(record.unfinished?.[0]||'write down one small next step');toast('Project marked for revival.')}break;
+  case 'generate-eulogy':if(record){generatedEulogy=makeEulogy(record);renderEulogy();toast('Eulogy card created. Drag it to Copy Text or Download Text.')}break;
+  case 'delete-project':if(record)removeProject(id);break;
+  case 'save-project':saveProjectDraft();break;
+  case 'discard-project':$('projectDialog').close();toast('Project draft discarded.');break;
+  case 'save-listing':saveListingDraft();break;
+  case 'discard-listing':$('adoptionDialog').close();toast('Listing draft discarded.');break;
+  case 'edit-listing':{const l=data.adoptions.find(x=>x.id===id);if(l)openListing(project(l.projectId),l);break}
+  case 'export-listing':{const l=data.adoptions.find(x=>x.id===id);if(l){const slug=l.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'adoption-listing';downloadBlob(slug+'-adoption.json',JSON.stringify({format:'project-graveyard-adoption',...l},null,2));toast('Listing JSON exported.')}break}
+  case 'remove-listing':if(confirm('Remove this local adoption listing?')){data.adoptions=data.adoptions.filter(x=>x.id!==id);save();renderAdoptions();refreshArchiveCard();toast('Local listing removed.')}break;
+  case 'import-listings':if(pendingListingImport?.length){data.adoptions.unshift(...pendingListingImport.map(x=>({...x,id:uid(),projectId:data.projects.some(p=>p.id===x.projectId)?x.projectId:null,created:x.created||new Date().toISOString(),updatedAt:new Date().toISOString()})));try{save();pendingListingImport=null;$('listingImportPreview').classList.add('hidden');renderAdoptions();refreshArchiveCard();toast('Listing JSON imported to local storage.')}catch(e){toast('Import failed: browser storage may be full.')}}break;
+  case 'save-salvage':{const name=$('partName').value.trim();if(!name){toast('Enter a reusable part name first.');$('partName').focus();break}data.salvage.unshift({id:uid(),name,source:$('partSource').value.trim(),notes:$('partNotes').value.trim(),created:new Date().toISOString()});try{save()}catch(e){data.salvage.shift();toast('Could not save salvage item.');break}$('salvageForm').reset();updateDraftPreview('salvage');renderSalvage();refreshArchiveCard();$('salvageCount').textContent=data.salvage.length;toast('Part saved to the salvage yard.');break}
+  case 'remove-salvage':{const idx=Number(card.id);if(!Number.isInteger(idx)||!data.salvage[idx])break;if(!confirm('Remove salvage item "'+data.salvage[idx].name+'"?'))break;data.salvage.splice(idx,1);save();renderSalvage();refreshArchiveCard();$('salvageCount').textContent=data.salvage.length;toast('Salvage item removed.');break}
+  case 'save-reflection':data.seance=$('seance').value;try{save();$('seanceStatus').textContent='Reflection saved in this browser.';refreshArchiveCard();toast('Reflection saved locally.')}catch(e){toast('Could not save reflection. Browser storage may be full.')}break;
+  case 'copy-text':if(navigator.clipboard?.writeText){try{await navigator.clipboard.writeText(generatedEulogy);toast('Eulogy copied.')}catch(e){prompt('Copy this eulogy',generatedEulogy)}}else prompt('Copy this eulogy',generatedEulogy);break;
+  case 'download-text':downloadBlob('project-eulogy.txt',generatedEulogy,'text/plain;charset=utf-8');toast('Eulogy downloaded.');break;
+  case 'timer-start':case 'timer-pause':case 'timer-reset':handleTimer(zone.dataset.zone);break;
+  case 'export-archive':exportArchive();break;
+  case 'clear-archive':pendingClear=true;refreshArchiveCard();toast('Clear staged. Drag the archive card again to Confirm Clear Archive.');break;
+  case 'confirm-clear':if(!pendingClear)break;if(!confirm('Clear every project, salvage part, reflection, and adoption listing from this browser?')){pendingClear=false;refreshArchiveCard();break}data={projects:[],salvage:[],seance:'',adoptions:[]};pendingClear=false;try{save()}catch(e){toast('Could not clear local archive.');break}$('seance').value='';render();updateDraftPreview('reflection');toast('Local archive cleared.');break;
+  case 'restore-archive':if(!pendingArchiveImport)break;if(!Array.isArray(pendingArchiveImport.projects)){toast('The selected file is not a valid project archive.');break}if(!confirm('Restore this archive and replace the current local projects, salvage, reflection and adoption listings?'))break;data={projects:pendingArchiveImport.projects,salvage:Array.isArray(pendingArchiveImport.salvage)?pendingArchiveImport.salvage:[],seance:typeof pendingArchiveImport.seance==='string'?pendingArchiveImport.seance:'',adoptions:Array.isArray(pendingArchiveImport.adoptions)?pendingArchiveImport.adoptions:[]};try{save()}catch(e){toast('Restore failed: browser storage may be full.');break}pendingArchiveImport=null;$('archivePreview').classList.add('hidden');$('seance').value=data.seance;render();updateDraftPreview('reflection');toast('Archive restored from JSON.');break;
+ }
+}
+function payloadFromTransfer(dt){try{const raw=dt?.getData('text/plain');if(raw){const p=JSON.parse(raw);if(p&&p.type)return p}}catch(e){}return activeDrag}
+document.addEventListener('dragstart',e=>{
+ const card=e.target.closest('[data-card-type]');if(!card)return;
+ activeDrag=dragPayload(card);
+ if(e.dataTransfer){e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',JSON.stringify(activeDrag))}
+ card.classList.add('is-dragging-card');
+});
+document.addEventListener('dragend',e=>{const card=e.target.closest('[data-card-type]');if(card)card.classList.remove('is-dragging-card');activeDrag=null;clearZoneStates()});
+document.addEventListener('dragover',e=>{
+ const zone=e.target.closest('.drop-zone');if(!zone)return;
+ e.preventDefault();const card=payloadFromTransfer(e.dataTransfer);
+ clearZoneStates();zone.classList.add(accepts(zone,card)?'is-over':'is-invalid');
+ if(e.dataTransfer)e.dataTransfer.dropEffect=accepts(zone,card)?'move':'none';
+});
+document.addEventListener('dragleave',e=>{const zone=e.target.closest?.('.drop-zone');if(zone&&!zone.contains(e.relatedTarget))zone.classList.remove('is-over','is-invalid')});
+document.addEventListener('drop',async e=>{
+ const zone=e.target.closest('.drop-zone');if(!zone)return;e.preventDefault();const card=payloadFromTransfer(e.dataTransfer);
+ clearZoneStates();if(card)await handleDrop(card,zone);activeDrag=null;document.body.classList.remove('is-dragging');
+});
+function zoneUnderPoint(x,y){return document.elementFromPoint(x,y)?.closest('.drop-zone')||null}
+function makeGhost(text,x,y){const g=document.createElement('div');g.className='drag-ghost';g.textContent=text;g.style.left=(x+12)+'px';g.style.top=(y+12)+'px';document.body.appendChild(g);return g}
+document.addEventListener('pointerdown',e=>{
+ if(!window.matchMedia?.('(pointer: coarse)').matches)return;
+ const card=e.target.closest('[data-card-type]');if(!card||e.target.closest('input,textarea,select,label'))return;
+ pointerDrag={card,payload:dragPayload(card),x:e.clientX,y:e.clientY,moved:false};
+});
+document.addEventListener('pointermove',e=>{
+ if(!pointerDrag)return;
+ const distance=Math.hypot(e.clientX-pointerDrag.x,e.clientY-pointerDrag.y);
+ if(!pointerDrag.moved&&distance<9)return;
+ pointerDrag.moved=true;activeDrag=pointerDrag.payload;document.body.classList.add('is-dragging');
+ if(!pointerGhost)pointerGhost=makeGhost(pointerDrag.card.querySelector('h3,strong')?.textContent||pointerDrag.card.textContent.trim().slice(0,55),e.clientX,e.clientY);
+ pointerGhost.style.left=(e.clientX+12)+'px';pointerGhost.style.top=(e.clientY+12)+'px';
+ const zone=zoneUnderPoint(e.clientX,e.clientY);clearZoneStates();if(zone)zone.classList.add(accepts(zone,activeDrag)?'is-over':'is-invalid');
+ if(e.clientY<70)window.scrollBy(0,-12);else if(e.clientY>window.innerHeight-70)window.scrollBy(0,12);
+ if(e.cancelable)e.preventDefault();
+},{passive:false});
+document.addEventListener('pointerup',async e=>{
+ if(!pointerDrag)return;
+ const state=pointerDrag;pointerDrag=null;
+ if(state.moved){const zone=zoneUnderPoint(e.clientX,e.clientY);if(zone)await handleDrop(state.payload,zone);clearZoneStates();}
+ if(pointerGhost){pointerGhost.remove();pointerGhost=null}activeDrag=null;document.body.classList.remove('is-dragging');
+});
+document.addEventListener('pointercancel',()=>{pointerDrag=null;if(pointerGhost)pointerGhost.remove();pointerGhost=null;activeDrag=null;clearZoneStates();document.body.classList.remove('is-dragging')});
+document.addEventListener('keydown',e=>{
+ const target=e.target,card=target.closest?.('[data-card-type]'),zone=target.closest?.('.drop-zone');
+ if(e.key==='Escape'&&keyboardDrag){keyboardDrag=null;clearZoneStates();toast('Drag cancelled.');return}
+ if(card&&(e.key===' '||e.key==='Spacebar')&&!target.closest('input,textarea,select')){
+  e.preventDefault();
+  if(!keyboardDrag){keyboardDrag=dragPayload(card);card.setAttribute('aria-grabbed','true');toast('Card picked up. Tab to a matching Action Zone and press Enter to drop; Escape cancels.')}
+  else{keyboardDrag=null;card.removeAttribute('aria-grabbed');clearZoneStates();toast('Keyboard drag cancelled.')}
+  return;
+ }
+ if(zone&&keyboardDrag&&(e.key==='Enter'||e.key===' ')){
+  e.preventDefault();const payload=keyboardDrag;keyboardDrag=null;document.querySelectorAll('[aria-grabbed="true"]').forEach(x=>x.removeAttribute('aria-grabbed'));handleDrop(payload,zone);return;
+ }
+});
+$('openAdoption').onclick=()=>{$('adoptionSection').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});$('adoptSearch').focus({preventScroll:true})};
+$('search').oninput=render;$('statusFilter').onchange=render;$('sort').onchange=render;$('adoptSearch').oninput=renderAdoptions;
+$('projectForm').onsubmit=e=>{e.preventDefault();toast('To save, drag the Project Draft card to the Save Project zone.')};
+$('adoptionForm').onsubmit=e=>{e.preventDefault();toast('To save, drag the Adoption Listing Draft card to the Save Local Listing zone.')};
+['name','description','goal','status','cause','progressInput','tags','completed','unfinished'].forEach(id=>{$(id).addEventListener('input',()=>updateDraftPreview('project'));$(id).addEventListener('change',()=>updateDraftPreview('project'))});
+['listingName','listingDescription','listingSkills','listingDifficulty','listingHandoff','listingAuthor','listingProgress','listingProject'].forEach(id=>{$(id).addEventListener('input',()=>updateDraftPreview('listing'));$(id).addEventListener('change',()=>updateDraftPreview('listing'))});
+['partName','partSource','partNotes'].forEach(id=>$(id).addEventListener('input',()=>updateDraftPreview('salvage')));
+$('seance').value=data.seance;$('seance').addEventListener('input',()=>updateDraftPreview('reflection'));
+$('listingProject').onchange=()=>{const p=project($('listingProject').value);if(!p)return;if(!$('listingName').value.trim())$('listingName').value=p.name;if(!$('listingDescription').value.trim())$('listingDescription').value=p.description||p.goal||'';if(!$('listingSkills').value.trim())$('listingSkills').value=(p.tags||[]).join(', ');if(!$('listingHandoff').value.trim())$('listingHandoff').value=(p.unfinished||[]).join('\n');if(!$('listingProgress').value||Number($('listingProgress').value)===0)$('listingProgress').value=p.progress||0;updateDraftPreview('listing')};
+$('salvageForm').onsubmit=e=>{e.preventDefault();toast('To save, drag the Salvage Draft card to the Save Salvage zone.')};
+$('seanceStatus').textContent=data.seance?'Saved reflection is loaded from this browser.':'';
+$('importFile').onchange=async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.projects))throw Error('Archive JSON must contain a projects array.');pendingArchiveImport=d;$('archivePreview').classList.remove('hidden');$('archivePreview').innerHTML='<div class="data-card" draggable="true" data-card-type="archive-import-preview" tabindex="0"><strong>ARCHIVE IMPORT PREVIEW</strong><span>'+d.projects.length+' projects · '+(Array.isArray(d.salvage)?d.salvage.length:0)+' salvage parts · '+(Array.isArray(d.adoptions)?d.adoptions.length:0)+' adoption listings.</span><small>Drag this preview into Restore Archive to replace local data.</small></div>';toast('Archive preview ready. Nothing has been imported yet.')}
+ catch(err){pendingArchiveImport=null;$('archivePreview').classList.add('hidden');toast('Archive import failed: '+err.message)}
+ finally{e.target.value=''}
 };
-$('adoptionForm').onsubmit=e=>{
- e.preventDefault();
- const id=$('adoptionId').value;
- const old=(data.adoptions||[]).find(x=>x.id===id);
- const projectId=$('listingProject').value;
- const d={id:id||uid(),projectId:projectId||null,name:$('listingName').value.trim(),description:$('listingDescription').value.trim(),skills:$('listingSkills').value.trim(),difficulty:$('listingDifficulty').value,handoff:$('listingHandoff').value.trim(),author:$('listingAuthor').value.trim()||'You',progress:Math.max(0,Math.min(100,Number($('listingProgress').value)||0)),created:old?.created||new Date().toISOString(),updatedAt:new Date().toISOString()};
- if(!d.name||!d.description){toast('Add a title and public description first.');return;}
- if(!Array.isArray(data.adoptions))data.adoptions=[];
- const ix=data.adoptions.findIndex(x=>x.id===d.id);
- if(ix>=0)data.adoptions[ix]=d;else data.adoptions.unshift(d);
- const p=project(projectId);if(p)p.listing=d;
- try{save();$('adoptionDialog').close();renderAdoptions();toast('Local adoption listing saved. Nothing was published.');}
- catch(err){toast('Could not save listing. Check browser storage space and try again.');}
-};
-$('adoptionGrid').onclick=e=>{
- const b=e.target.closest('button');if(!b)return;
- const id=b.dataset.editListing||b.dataset.deleteListing||b.dataset.exportListing;
- const l=(data.adoptions||[]).find(x=>x.id===id);if(!l)return;
- if(b.dataset.editListing){openListing(project(l.projectId),l);return;}
- if(b.dataset.deleteListing){if(!confirm('Remove this local adoption listing?'))return;data.adoptions=data.adoptions.filter(x=>x.id!==id);save();renderAdoptions();toast('Local listing removed.');return;}
- if(b.dataset.exportListing){const slug=String(l.name||'adoption-listing').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'adoption-listing';downloadJSON(slug+'-adoption.json',{format:'project-graveyard-adoption',...l});toast('Listing JSON exported.');}
-};
-$('adoptSearch').oninput=renderAdoptions;
-$('importListing').onclick=()=>$('listingFile').click();
 $('listingFile').onchange=async e=>{
  const f=e.target.files?.[0];if(!f)return;
- try{
-  const raw=JSON.parse(await f.text());
-  const incoming=Array.isArray(raw)?raw:(Array.isArray(raw.listings)?raw.listings:[raw]);
-  const valid=incoming.filter(x=>x&&typeof x==='object'&&String(x.name||'').trim()&&String(x.description||'').trim());
-  if(!valid.length)throw Error('JSON must contain a listing title and description.');
-  if(!Array.isArray(data.adoptions))data.adoptions=[];
-  for(const x of valid){
-   const copy={...x,id:uid(),projectId:data.projects.some(p=>p.id===x.projectId)?x.projectId:null,name:String(x.name).trim(),description:String(x.description).trim(),skills:String(x.skills||''),difficulty:String(x.difficulty||'Intermediate'),handoff:String(x.handoff||''),author:String(x.author||'You'),progress:Math.max(0,Math.min(100,Number(x.progress)||0)),created:x.created||new Date().toISOString(),updatedAt:new Date().toISOString()};
-   delete copy.format;
-   data.adoptions.unshift(copy);
-  }
-  save();renderAdoptions();toast('Listing imported and saved locally. It is not published.');
- }catch(err){toast('Listing import failed: '+err.message);}
- finally{e.target.value='';}
+ try{const raw=JSON.parse(await f.text());const incoming=Array.isArray(raw)?raw:(Array.isArray(raw.listings)?raw.listings:[raw]);const valid=incoming.filter(x=>x&&typeof x==='object'&&String(x.name||'').trim()&&String(x.description||'').trim());if(!valid.length)throw Error('JSON must contain a listing title and description.');pendingListingImport=valid;$('listingImportPreview').classList.remove('hidden');$('listingImportPreview').innerHTML='<div class="data-card" draggable="true" data-card-type="listing-import-preview" tabindex="0"><strong>LISTING IMPORT PREVIEW</strong><span>'+valid.length+' listing'+(valid.length===1?'':'s')+' ready to import.</span><small>Drag this preview to Import Listings. No listing has been saved yet.</small></div>';toast('Listing preview ready. Nothing has been imported yet.')}
+ catch(err){pendingListingImport=null;$('listingImportPreview').classList.add('hidden');toast('Listing import failed: '+err.message)}
+ finally{e.target.value=''}
 };
-
-function paintTimer(){$('timer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
-$('startTimer').onclick=()=>{if(timerInterval){clearInterval(timerInterval);timerInterval=null;$('startTimer').textContent='Resume timer';return}$('startTimer').textContent='Pause timer';timerInterval=setInterval(()=>{seconds--;paintTimer();if(seconds<=0){clearInterval(timerInterval);timerInterval=null;$('startTimer').textContent='Start again';toast('30 minutes. Write down what moved.');if('Notification'in window&&Notification.permission==='granted')new Notification('Project Graveyard',{body:'Your 30-minute session is complete.'})}},1000)};
-$('resetTimer').onclick=()=>{clearInterval(timerInterval);timerInterval=null;seconds=1800;paintTimer();$('startTimer').textContent='Start 30 minutes'};
-$('clearBtn').onclick=()=>{if(confirm('Clear the entire local archive?')&&confirm('Final check: permanently remove all saved projects, salvage parts, and reflections from this browser?')){localStorage.removeItem(KEY);data={projects:[],salvage:[],seance:''};render();$('seance').value='';toast('Local archive cleared.')}}
-render();
+render();updateDraftPreview('project');updateDraftPreview('listing');updateDraftPreview('salvage');updateDraftPreview('reflection');paintTimer();
 })();
 </script></body></html>
