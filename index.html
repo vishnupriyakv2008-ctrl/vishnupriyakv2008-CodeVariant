@@ -31,19 +31,186 @@ body.is-dragging{cursor:grabbing}
 @media(max-width:850px){.zone-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.zone-grid{grid-template-columns:1fr}.drag-seed,.file-picker{width:100%}}
 
+
+/* Reference-matched UI skin: black/red/white, yellow hard shadows and arched tombstones.
+   Action-zone logic and local-only behavior remain unchanged. */
+:root{
+ color-scheme:dark;
+ --bg:#0B0B0B;
+ --panel:#1D1D1D;
+ --paper:#F2F2F2;
+ --muted:#B8B8B8;
+ --red:#FF2D20;
+ --yellow:#FFD500;
+ --line:#6B6B6B;
+ --green:#B8B8B8;
+}
+html{scroll-behavior:smooth;scroll-padding-top:1.5rem}
+body{background:var(--bg);color:var(--paper);font:14px/1.5 Georgia,"Times New Roman",serif}
+button,input,textarea,select{font:inherit}
+button{background:var(--red);color:var(--paper);border:2px solid var(--paper);box-shadow:3px 4px 0 var(--yellow);border-radius:7px;font-family:Arial,Helvetica,sans-serif;font-size:.68rem;letter-spacing:.035em;text-transform:uppercase}
+button:hover{background:var(--yellow);color:var(--bg)}
+button.secondary{background:var(--panel);color:var(--paper);box-shadow:3px 4px 0 var(--red)}
+button.danger{background:var(--red);color:var(--paper);box-shadow:3px 4px 0 var(--red)}
+header{position:relative;padding:1.2rem clamp(1rem,4vw,4rem) .95rem;border-bottom:1px solid var(--line);background:var(--bg);align-items:center;gap:1.2rem}
+header:before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:var(--red)}
+.header-brand{min-width:150px;padding-top:.2rem}
+.brand{font-family:Arial,Helvetica,sans-serif;font-size:1.08rem;font-weight:900;letter-spacing:.08em;color:var(--paper)}
+.brand span{color:var(--red)}
+.local{font-family:Arial,Helvetica,sans-serif;color:var(--muted);font-size:.58rem;letter-spacing:.09em;margin-top:.22rem}
+.top-nav{display:flex;align-items:center;justify-content:center;gap:clamp(.55rem,1.6vw,1.6rem);flex:1;flex-wrap:wrap}
+.top-nav a,.header-action-link{color:var(--muted);font:700 .61rem/1.4 Arial,Helvetica,sans-serif;letter-spacing:.05em;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+.top-nav a:hover,.header-action-link:hover{color:var(--red)}
+.top-nav a:focus-visible,.header-action-link:focus-visible{outline:2px solid var(--yellow);outline-offset:4px}
+.header-actions{align-items:center;gap:.7rem}
+.header-action-link{border-bottom:1px solid var(--red);padding:.4rem 0}
+#openAdoption{white-space:nowrap;padding:.58rem .7rem}
+main{max-width:1440px;padding:clamp(1rem,3vw,2.4rem);background:var(--bg);border:1px solid var(--line);border-radius:10px;box-shadow:4px 5px 0 var(--red);margin:1.5rem auto 2.6rem}
+.eyebrow,.local,.meta,.tag,.stat small,.field label,.drag-hint,.drop-zone,.drag-seed,.file-picker,.footer,.top-nav,.header-action-link{font-family:Arial,Helvetica,sans-serif}
+.eyebrow{color:var(--red);font-size:.62rem;letter-spacing:.12em;font-weight:800;text-transform:uppercase}
+h1,h2{font-family:Arial,Helvetica,sans-serif;font-weight:900;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.1px var(--paper);letter-spacing:.015em}
+h1{font-size:clamp(3.2rem,8.1vw,7rem);line-height:.9;letter-spacing:-.015em;margin:.65rem 0 1.3rem;max-width:1050px}
+h1 span{color:transparent;-webkit-text-stroke-color:var(--red)}
+.intro{max-width:640px;color:var(--muted);font-family:Georgia,"Times New Roman",serif;font-size:.94rem;line-height:1.7}
+.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:2rem 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-bottom:2px solid var(--red);box-shadow:3px 4px 0 var(--red);padding:1rem .9rem}
+.stat strong{font-family:Arial,Helvetica,sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.05;color:var(--paper);-webkit-text-stroke:.5px var(--paper)}
+.stat:nth-child(2) strong{color:transparent;-webkit-text-stroke:1px var(--yellow)}
+.stat:nth-child(3) strong{color:transparent;-webkit-text-stroke:1px var(--red)}
+.stat small{display:block;margin-top:.45rem;font-size:.57rem;letter-spacing:.08em;color:var(--muted)}
+.toolbar{align-items:center;gap:.75rem;margin:1.25rem 0}
+input,textarea,select{background:var(--bg);color:var(--paper);border:1px solid var(--line);border-radius:18px;padding:.72rem .9rem;font-size:.85rem}
+input:focus,textarea:focus,select:focus{outline:1px solid var(--red);border-color:var(--red);box-shadow:3px 3px 0 #FF2D2040}
+.toolbar input{flex:1;min-width:200px}
+.toolbar select{width:auto;min-width:120px}
+.toolbar .drag-seed{white-space:nowrap}
+.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:1.1rem}
+.card{background:var(--panel);border:1.5px solid var(--line);box-shadow:3px 5px 0 var(--red);padding:1rem;min-width:0;border-radius:2px;color:var(--paper)}
+.card:before{display:none}
+.card h3{font:800 1.12rem/1.15 Arial,Helvetica,sans-serif;letter-spacing:-.02em;margin:.75rem 0 .32rem;color:var(--paper)}
+.card p{font: .8rem/1.5 Georgia,"Times New Roman",serif;color:var(--muted)}
+.card .meta{font-size:.57rem;letter-spacing:.045em}
+.tag{border:1px solid var(--line);padding:.16rem .36rem;color:var(--muted);background:transparent;font-size:.56rem}
+.card[data-card-type="project"]{border-radius:48% 48% 0 0 / 12% 12% 0 0;padding:3.05rem 1rem 1rem;position:relative;min-height:330px;box-shadow:3px 5px 0 var(--red);display:flex;flex-direction:column;align-items:stretch}
+.card[data-card-type="project"]:hover{box-shadow:4px 6px 0 var(--yellow);border-color:var(--muted)}
+.card[data-card-type="project"] .drag-handle{position:absolute;top:1.05rem;left:0;right:0;text-align:center;font-size:.54rem;letter-spacing:.1em;color:var(--muted);cursor:grab}
+.card[data-card-type="project"] .meta:first-of-type{justify-content:center;margin:0 0 .75rem}
+.status-badge{font-family:Arial,Helvetica,sans-serif;font-size:.52rem;letter-spacing:.04em}
+.status-dead,.status-archived{color:var(--paper);border-color:var(--muted)}
+.status-dormant{color:var(--yellow);border-color:var(--yellow)}
+.status-resurrecting{color:var(--red);border-color:var(--red)}
+.status-adopted{color:var(--muted);border-color:var(--muted)}
+.card[data-card-type="project"] .tombstone-percent{font-family:Arial,Helvetica,sans-serif;text-align:center;font-size:2.1rem;line-height:1.05;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--paper);margin:.2rem 0}
+.card[data-card-type="project"] .tombstone-percent.status-dormant{color:transparent;-webkit-text-stroke-color:var(--yellow)}
+.card[data-card-type="project"] .tombstone-percent.status-resurrecting{color:transparent;-webkit-text-stroke-color:var(--red)}
+.card[data-card-type="project"] h3{text-align:center;font-size:1.02rem;margin:.3rem 0}
+.card[data-card-type="project"] .project-description{text-align:center;font-size:.72rem;min-height:2.5em;margin:.1rem 0 .65rem}
+.card[data-card-type="project"] .meta.tags-row{justify-content:center;min-height:1.35rem}
+.progress{height:5px;background:#373737;margin:.85rem 0 .6rem;border-radius:0;overflow:hidden}
+.progress i{display:block;background:var(--paper);height:100%}
+.card[data-card-type="project"].status-tone-dormant .progress i{background:var(--yellow)}
+.card[data-card-type="project"].status-tone-resurrecting .progress i{background:var(--red)}
+.card[data-card-type="project"] .grave-cause{border-top:1px solid #484848;padding-top:.55rem;margin-top:auto;display:grid;grid-template-columns:1fr auto;align-items:end;gap:.25rem .6rem}
+.card[data-card-type="project"] .grave-cause label{grid-column:1/-1;font:700 .5rem Arial,Helvetica,sans-serif;color:var(--muted);letter-spacing:.1em}
+.card[data-card-type="project"] .grave-cause strong{font:700 .66rem Arial,Helvetica,sans-serif;overflow-wrap:anywhere}
+.card[data-card-type="project"] .grave-cause span{font: .59rem Georgia,"Times New Roman",serif;color:var(--muted);white-space:nowrap}
+.card[data-card-type="project"] .unfinished-count{display:block;text-align:right;font: .57rem Arial,Helvetica,sans-serif;color:var(--muted);margin-top:.5rem}
+.card[data-card-type="adoption"]{box-shadow:3px 4px 0 var(--red)}
+.card[data-card-type="adoption"] .drag-handle{display:block;text-align:right;font-size:.55rem;color:var(--muted)}
+.card[data-card-type="adoption"] h3{font-size:1.12rem}
+.progress i{transition:width .18s ease-out}
+.section{margin-top:3.2rem;border-top:1px solid var(--line);padding-top:1.35rem}
+.section h2{font-size:clamp(1.75rem,4.7vw,3.5rem);letter-spacing:-.01em;line-height:1;margin:.4rem 0 1rem}
+.panel{background:var(--panel);border:1px solid var(--line);box-shadow:3px 4px 0 var(--red);padding:1.2rem}
+.formgrid{gap:.9rem}
+.field label{font-size:.57rem;color:var(--muted);letter-spacing:.1em;font-weight:800}
+.field textarea{min-height:90px;resize:vertical;border-radius:5px}
+.actions{gap:.7rem;margin-top:1rem}
+.drop-zone{min-height:66px;display:flex;align-items:center;justify-content:center;text-align:center;padding:.7rem;border:1px solid var(--line);background:var(--panel);box-shadow:3px 4px 0 var(--red);border-radius:2px;color:var(--paper);font-size:.57rem;line-height:1.45;letter-spacing:.08em;font-weight:800;cursor:default;user-select:none}
+.drop-zone.is-over,.drop-zone:focus-visible{outline:1px solid var(--yellow);outline-offset:2px;border-color:var(--yellow);background:#1d1d1d;box-shadow:4px 5px 0 var(--yellow);color:var(--yellow)}
+.drop-zone.is-invalid{border-color:var(--red);box-shadow:3px 4px 0 var(--red);color:var(--red)}
+.drop-zone[data-zone="save-project"],.drop-zone[data-zone="save-listing"],.drop-zone[data-zone="save-salvage"],.drop-zone[data-zone="save-reflection"]{border-color:var(--paper)}
+.drop-zone[data-zone="save-project"]:before,.drop-zone[data-zone="save-listing"]:before,.drop-zone[data-zone="save-salvage"]:before,.drop-zone[data-zone="save-reflection"]:before{content:"✳";font-size:1rem;margin-right:.55rem;color:var(--red)}
+.drag-seed{background:var(--red);color:var(--paper);border:1px solid var(--paper);box-shadow:3px 4px 0 var(--yellow);border-radius:5px;padding:.72rem .9rem;font:800 .65rem Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:.05em;cursor:grab;user-select:none}
+.drag-seed:hover{background:var(--yellow);color:var(--bg)}
+.drag-seed .drag-handle{color:var(--paper)}
+.data-card{background:var(--panel);border:1px solid var(--line);box-shadow:3px 4px 0 var(--red);border-radius:2px;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.4rem;cursor:grab;user-select:none;touch-action:pan-y}
+.data-card strong{font:800 .65rem Arial,Helvetica,sans-serif;letter-spacing:.1em;color:var(--red)}
+.data-card small,.data-card span{font-size:.77rem;color:var(--muted);overflow-wrap:anywhere}
+.draft-card{border-style:dashed;margin:.8rem 0}
+.drag-handle{display:block;text-align:left;font:700 .55rem Arial,Helvetica,sans-serif;letter-spacing:.12em;color:var(--muted);cursor:grab;touch-action:none;padding:.15rem 0;user-select:none}
+.drag-seed .drag-handle{display:inline-block;margin-left:.3rem;color:var(--paper)}
+.file-picker{display:inline-flex;align-items:center;justify-content:center;padding:.7rem .9rem;border:1px solid var(--paper);box-shadow:3px 4px 0 var(--red);background:var(--panel);color:var(--paper);font-weight:800;font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.file-picker:hover{border-color:var(--yellow);color:var(--yellow);box-shadow:3px 4px 0 var(--yellow)}
+.drag-hint{font-size:.54rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.list{padding-left:0;color:var(--muted);font-size:.8rem}
+.list li{margin:.6rem 0}
+.toast{background:var(--yellow);color:var(--bg);box-shadow:3px 4px 0 var(--red);font:700 .72rem Arial,Helvetica,sans-serif}
+dialog{background:var(--bg);color:var(--paper);border:1.5px solid var(--line);box-shadow:5px 6px 0 var(--red);border-radius:2px}
+dialog h2{margin:.45rem 0 1.2rem}
+dialog::backdrop{background:#000d}
+.footer{color:var(--muted);font-size:.57rem;letter-spacing:.08em;margin-top:4rem;border-top:1px solid var(--line);padding-top:1rem}
+@media(max-width:1050px){
+ header{gap:.8rem}
+ .header-brand{min-width:120px}
+ .top-nav{order:3;flex-basis:100%;justify-content:flex-start;border-top:1px solid #333;padding-top:.55rem}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .card[data-card-type="project"]{min-height:315px}
+}
+@media(max-width:580px){
+ header{align-items:flex-start;padding-top:1.05rem}
+ .header-brand{min-width:0}
+ .brand{font-size:1rem}
+ .local{font-size:.48rem}
+ .header-actions{margin-left:auto!important;flex-direction:column;align-items:stretch}
+ #openAdoption{font-size:.56rem;padding:.5rem}
+ .header-action-link{display:none}
+ .top-nav{gap:.9rem;overflow-x:auto;flex-wrap:nowrap;padding:.65rem .1rem .15rem;order:3;white-space:nowrap}
+ .top-nav a{font-size:.55rem}
+ main{margin:.75rem .45rem 1.5rem;padding:1rem .8rem;border-radius:5px;box-shadow:3px 4px 0 var(--red)}
+ h1{font-size:clamp(2.9rem,12vw,4.2rem);line-height:.92;letter-spacing:-.02em}
+ .intro{font-size:.84rem}
+ .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:.45rem;margin:1.4rem 0}
+ .stat{padding:.7rem .5rem;box-shadow:2px 3px 0 var(--red)}
+ .stat strong{font-size:1.4rem}
+ .stat small{font-size:.43rem;line-height:1.3}
+ .toolbar>*{width:auto}
+ .toolbar input{flex:1 1 100%;min-width:0}
+ .toolbar select{flex:1 1 40%;min-width:0;font-size:.72rem}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+ .card[data-card-type="project"]{min-height:290px;padding:2.8rem .6rem .7rem;border-radius:48% 48% 0 0 / 10% 10% 0 0;box-shadow:2px 4px 0 var(--red)}
+ .card[data-card-type="project"] .drag-handle{top:.8rem;font-size:.42rem}
+ .card[data-card-type="project"] .tombstone-percent{font-size:1.6rem}
+ .card[data-card-type="project"] h3{font-size:.86rem;overflow-wrap:anywhere}
+ .card[data-card-type="project"] .project-description{font-size:.64rem}
+ .card[data-card-type="project"] .meta.tags-row{gap:.2rem}
+ .card[data-card-type="project"] .tag{font-size:.45rem}
+ .card[data-card-type="project"] .grave-cause strong{font-size:.57rem}
+ .card[data-card-type="project"] .grave-cause span{font-size:.52rem}
+ .card[data-card-type="project"] .unfinished-count{font-size:.47rem}
+ .section{margin-top:2.4rem}
+ .section h2{font-size:2rem}
+ .formgrid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
+ .zone-grid{grid-template-columns:1fr}
+ .drop-zone{min-height:52px;font-size:.58rem}
+ .drag-seed,.file-picker{width:100%}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.progress i{transition:none}}
+
 </style>
 </head>
 <body>
-<header><div><div class="brand">☠ The Project Graveyard</div><div class="local">● LOCAL-ONLY ARCHIVE · NO BACKEND</div></div><div class="actions" style="margin:0"><button class="secondary" id="openAdoption">Open Adoption (<span id="listingCount">0</span>)</button></div></header>
+<header><div class="header-brand"><div class="brand">GRAVE<span>YARD</span></div><div class="local">● LOCAL-ONLY ARCHIVE · NO BACKEND</div></div><nav class="top-nav" aria-label="Main navigation"><a href="#projectGrid">ARCHIVE</a><a href="#salvageForm">SALVAGE</a><a href="#projectZones">ACTIONS</a><a href="#adoptionSection">ADOPTION</a><a href="#seance">SEANCE</a></nav><div class="actions header-actions" style="margin:0"><a class="header-action-link" href="#projectZones">ACTION ZONES</a><button class="secondary" id="openAdoption">Open Adoption (<span id="listingCount">0</span>)</button></div></header>
 <main><div class="eyebrow">A museum of almost</div><h1>GOOD IDEAS<br>DON’T <span>REST</span><br>IN PEACE.</h1><p class="intro">Every abandoned project left something behind. Archive the unfinished, salvage what still has a pulse, and give the next idea a better chance.</p>
 <div class="stats"><div class="stat"><strong id="total">0</strong><small>Projects buried</small></div><div class="stat"><strong id="salvageCount">0</strong><small>Parts salvaged</small></div><div class="stat"><strong id="revivalCount">0</strong><small>Back from the dead</small></div></div>
 <div class="toolbar"><input id="search" placeholder="Search names, tags, causes…"><select id="statusFilter"><option value="">All statuses</option><option>Dead</option><option>Dormant</option><option>Archived</option><option>Resurrecting</option><option>Adopted</option></select><select id="sort"><option value="recent">Recently active</option><option value="name">Name A–Z</option><option value="progress">Most complete</option></select><div class="drag-seed" draggable="true" data-card-type="new-project-seed" tabindex="0" aria-label="Drag to Create Project">＋ Bury a project <span data-drag-handle aria-hidden="true">⠿</span></div></div>
 <div class="zone-grid" id="projectZones" aria-label="Project action zones"><div class="drop-zone" data-zone="create-project" data-accept="new-project-seed" tabindex="0">DROP SEED · CREATE PROJECT</div><div class="drop-zone" data-zone="edit-project" data-accept="project" tabindex="0">DROP PROJECT · EDIT</div><div class="drop-zone" data-zone="prepare-listing" data-accept="project,listing-seed" tabindex="0">DROP CARD · PREPARE ADOPTION</div><div class="drop-zone" data-zone="revive-project" data-accept="project" tabindex="0">DROP PROJECT · REVIVE</div><div class="drop-zone" data-zone="generate-eulogy" data-accept="project" tabindex="0">DROP PROJECT · GENERATE EULOGY</div><div class="drop-zone" data-zone="delete-project" data-accept="project" tabindex="0">DROP PROJECT · STAGE DELETE</div><div class="drop-zone" data-zone="confirm-delete" data-accept="pending-delete" tabindex="0">DROP PENDING DELETE · CONFIRM</div><div class="drop-zone" data-zone="copy-text" data-accept="eulogy" tabindex="0">DROP EULOGY · COPY TEXT</div><div class="drop-zone" data-zone="download-text" data-accept="eulogy" tabindex="0">DROP EULOGY · DOWNLOAD TEXT</div></div>
 <div id="pendingActionTray" class="hidden"></div><div id="eulogyOutput" class="hidden"></div>
 <div id="projectGrid" class="grid"></div>
-<section class="section"><div class="eyebrow">01 / Revival chamber</div><h2>Nothing is ever entirely dead.</h2><div class="panel"><p>Pick one unfinished task. Make it smaller than your resistance. Give it 30 minutes, no grand comeback required.</p><div class="data-card timer-card" id="timerCard" draggable="true" data-card-type="timer" tabindex="0" aria-label="Timer card: drag to a timer action zone"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG TIMER</span><div class="timer" id="timer">30:00</div></div><p class="drag-hint">DRAG THE TIMER CARD TO A ZONE</p><div class="zone-grid"><div class="drop-zone" data-zone="timer-start" data-accept="timer" tabindex="0">DROP TIMER · START / RESUME</div><div class="drop-zone" data-zone="timer-pause" data-accept="timer" tabindex="0">DROP TIMER · PAUSE</div><div class="drop-zone" data-zone="timer-reset" data-accept="timer" tabindex="0">DROP TIMER · RESET</div></div><p id="timerTip" class="intro">Your next move: open one old project and identify the smallest useful piece.</p></div></section>
-<section class="section"><div class="eyebrow">02 / Salvage yard</div><h2>Keep the useful bits.</h2><div class="panel"><form id="salvageForm" class="formgrid"><div class="field"><label for="partName">Reusable part</label><input id="partName" required placeholder="e.g. Authentication flow"></div><div class="field"><label for="partSource">From project</label><input id="partSource" placeholder="Project name"></div><div class="field full"><label for="partNotes">Why it’s worth saving</label><textarea id="partNotes" placeholder="A useful pattern, lesson, component…"></textarea></div></form><div class="data-card draft-card" id="salvageDraftCard" draggable="true" data-card-type="salvage-draft" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG</span><strong>SALVAGE DRAFT</strong><span id="salvageDraftPreview">Complete the fields above, then drag this card to Save Salvage.</span></div><div class="zone-grid"><div class="drop-zone" data-zone="save-salvage" data-accept="salvage-draft" tabindex="0">DROP DRAFT · SAVE SALVAGE</div><div class="drop-zone" data-zone="remove-salvage" data-accept="salvage" tabindex="0">DROP SALVAGE ITEM · REMOVE</div></div><ul id="salvageList" class="list"></ul></div></section>
-<section class="section"><div class="eyebrow">03 / Seance notes</div><h2>Talk to your past self.</h2><div class="panel"><p class="intro">What was the original spark? What did you learn? What would make this worth reopening?</p><textarea id="seance" style="min-height:120px" placeholder="Leave a note for future you…"></textarea><div class="data-card draft-card" id="reflectionDraftCard" draggable="true" data-card-type="reflection-draft" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG</span><strong>REFLECTION DRAFT</strong><span id="reflectionDraftPreview">Write a reflection above, then drag this card to Save Reflection.</span></div><div class="zone-grid"><div class="drop-zone" data-zone="save-reflection" data-accept="reflection-draft" tabindex="0">DROP DRAFT · SAVE REFLECTION</div></div><p id="seanceStatus" class="intro"></p></div></section>
+<section class="section" id="revivalSection"><div class="eyebrow">01 / Revival chamber</div><h2>Nothing is ever entirely dead.</h2><div class="panel"><p>Pick one unfinished task. Make it smaller than your resistance. Give it 30 minutes, no grand comeback required.</p><div class="data-card timer-card" id="timerCard" draggable="true" data-card-type="timer" tabindex="0" aria-label="Timer card: drag to a timer action zone"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG TIMER</span><div class="timer" id="timer">30:00</div></div><p class="drag-hint">DRAG THE TIMER CARD TO A ZONE</p><div class="zone-grid"><div class="drop-zone" data-zone="timer-start" data-accept="timer" tabindex="0">DROP TIMER · START / RESUME</div><div class="drop-zone" data-zone="timer-pause" data-accept="timer" tabindex="0">DROP TIMER · PAUSE</div><div class="drop-zone" data-zone="timer-reset" data-accept="timer" tabindex="0">DROP TIMER · RESET</div></div><p id="timerTip" class="intro">Your next move: open one old project and identify the smallest useful piece.</p></div></section>
+<section class="section" id="salvageSection"><div class="eyebrow">02 / Salvage yard</div><h2>Keep the useful bits.</h2><div class="panel"><form id="salvageForm" class="formgrid"><div class="field"><label for="partName">Reusable part</label><input id="partName" required placeholder="e.g. Authentication flow"></div><div class="field"><label for="partSource">From project</label><input id="partSource" placeholder="Project name"></div><div class="field full"><label for="partNotes">Why it’s worth saving</label><textarea id="partNotes" placeholder="A useful pattern, lesson, component…"></textarea></div></form><div class="data-card draft-card" id="salvageDraftCard" draggable="true" data-card-type="salvage-draft" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG</span><strong>SALVAGE DRAFT</strong><span id="salvageDraftPreview">Complete the fields above, then drag this card to Save Salvage.</span></div><div class="zone-grid"><div class="drop-zone" data-zone="save-salvage" data-accept="salvage-draft" tabindex="0">DROP DRAFT · SAVE SALVAGE</div><div class="drop-zone" data-zone="remove-salvage" data-accept="salvage" tabindex="0">DROP SALVAGE ITEM · REMOVE</div></div><ul id="salvageList" class="list"></ul></div></section>
+<section class="section" id="seanceSection"><div class="eyebrow">03 / Seance notes</div><h2>Talk to your past self.</h2><div class="panel"><p class="intro">What was the original spark? What did you learn? What would make this worth reopening?</p><textarea id="seance" style="min-height:120px" placeholder="Leave a note for future you…"></textarea><div class="data-card draft-card" id="reflectionDraftCard" draggable="true" data-card-type="reflection-draft" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG</span><strong>REFLECTION DRAFT</strong><span id="reflectionDraftPreview">Write a reflection above, then drag this card to Save Reflection.</span></div><div class="zone-grid"><div class="drop-zone" data-zone="save-reflection" data-accept="reflection-draft" tabindex="0">DROP DRAFT · SAVE REFLECTION</div></div><p id="seanceStatus" class="intro"></p></div></section>
 <section class="section" id="adoptionSection"><div class="eyebrow">04 / Open adoption</div><h2>Give an unfinished idea a second life.</h2><p class="intro">Prepare a handoff listing and keep it in this browser. Nothing is published or shared unless you export it yourself.</p><div class="toolbar"><input id="adoptSearch" placeholder="Search local adoption listings…"><div class="drag-seed" draggable="true" data-card-type="listing-seed" tabindex="0" aria-label="Drag to Prepare Adoption">＋ Prepare a listing <span data-drag-handle aria-hidden="true">⠿</span></div><label class="file-picker" for="listingFile">Choose listing JSON</label><input id="listingFile" type="file" accept=".json,application/json" hidden></div><div class="zone-grid" id="adoptionZones"><div class="drop-zone" data-zone="prepare-listing" data-accept="project,listing-seed" tabindex="0">DROP CARD · PREPARE LISTING</div><div class="drop-zone" data-zone="edit-listing" data-accept="adoption" tabindex="0">DROP LISTING · EDIT</div><div class="drop-zone" data-zone="export-listing" data-accept="adoption" tabindex="0">DROP LISTING · EXPORT JSON</div><div class="drop-zone" data-zone="remove-listing" data-accept="adoption" tabindex="0">DROP LISTING · STAGE REMOVE</div><div class="drop-zone" data-zone="import-listings" data-accept="listing-import-preview" tabindex="0">DROP PREVIEW · IMPORT LISTINGS</div></div><div id="listingImportPreview" class="hidden"></div><div id="adoptionGrid" class="grid"></div><div id="adoptionEmpty" class="panel hidden"><strong>No local adoption listings yet.</strong><p class="intro">Prepare one for an unfinished project, then choose whether to export it.</p></div></section>
 <section class="section"><div class="eyebrow">05 / The last rites</div><h2>Data belongs to you.</h2><p class="intro">Your archive lives in this browser’s local storage. Export JSON for a backup; import it on another browser to restore. Nothing is uploaded by this app.</p><div class="data-card" id="archiveCard" draggable="true" data-card-type="archive" tabindex="0"><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG ARCHIVE</span><strong>LOCAL ARCHIVE SNAPSHOT</strong><span id="archiveSummary">Projects, salvage parts, reflections and adoption listings.</span><small>Drag this archive card to an action zone below.</small></div><div class="zone-grid"><div class="drop-zone" data-zone="export-archive" data-accept="archive" tabindex="0">DROP ARCHIVE · EXPORT JSON</div><div class="drop-zone" data-zone="restore-archive" data-accept="archive-import-preview" tabindex="0">DROP PREVIEW · RESTORE ARCHIVE</div><div class="drop-zone" data-zone="clear-archive" data-accept="archive" tabindex="0">DROP ARCHIVE · PREPARE CLEAR</div><div class="drop-zone" data-zone="confirm-clear" data-accept="pending-clear" tabindex="0">DROP PENDING ARCHIVE · CONFIRM CLEAR</div></div><div class="toolbar"><label class="file-picker" for="importFile">Choose archive JSON</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div id="archivePreview" class="hidden"></div></section>
 <div class="footer">THE PROJECT GRAVEYARD · BUILT FOR THE BEAUTIFUL FAILURE · PLAIN HTML, CSS & JAVASCRIPT</div></main>
@@ -101,7 +268,7 @@ function render(){
  const q=$('search').value.toLowerCase(),st=$('statusFilter').value,sort=$('sort').value;
  let p=data.projects.filter(x=>(!st||x.status===st)&&[x.name,x.description,x.cause,...(x.tags||[])].join(' ').toLowerCase().includes(q));
  p.sort(sort==='name'?((a,b)=>a.name.localeCompare(b.name)):sort==='progress'?((a,b)=>(b.progress||0)-(a.progress||0)):((a,b)=>new Date(b.lastActive||b.created)-new Date(a.lastActive||a.created)));
- $('projectGrid').innerHTML=p.length?p.map(x=>'<article class="card" draggable="true" data-card-type="project" data-record-id="'+esc(x.id)+'" tabindex="0" aria-label="Project card '+esc(x.name)+'. Drag to a project action zone."><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG PROJECT</span><div class="meta"><span class="tag">'+esc(x.status)+'</span><span>'+esc(x.cause||'Unknown cause')+'</span></div><h3>'+esc(x.name)+'</h3><p>'+esc(x.description||x.goal||'No epitaph written yet.')+'</p><div class="meta">'+(x.tags||[]).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div><div class="progress"><i style="width:'+Math.max(0,Math.min(100,Number(x.progress)||0))+'%"></i></div><small>'+Number(x.progress||0)+'% complete · '+(x.unfinished||[]).length+' unfinished tasks</small></article>').join(''):'<p class="intro">No projects in this corner of the graveyard. Bury a new idea above.</p>';
+ $('projectGrid').innerHTML=p.length?p.map(x=>'<article class="card" draggable="true" data-card-type="project" data-record-id="'+esc(x.id)+'" tabindex="0" aria-label="Project card '+esc(x.name)+'. Drag to a project action zone."><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG PROJECT</span><div class="meta"><span class="tag status-badge status-'+esc(String(x.status||'dead').toLowerCase().replace(/\\s+/g,'-'))+'">'+esc(x.status)+'</span></div><div class="tombstone-percent status-'+esc(String(x.status||'dead').toLowerCase().replace(/\\s+/g,'-'))+'">'+Number(x.progress||0)+'%</div><h3>'+esc(x.name)+'</h3><p class="project-description">'+esc(x.description||x.goal||'No epitaph written yet.')+'</p><div class="meta tags-row">'+(x.tags||[]).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div><div class="progress"><i style="width:'+Math.max(0,Math.min(100,Number(x.progress)||0))+'%"></i></div><div class="grave-cause"><label>CAUSE OF DEATH</label><strong>'+esc(x.cause||'Unknown cause')+'</strong><span>'+Math.max(0,Math.floor((Date.now()-new Date(x.lastActive||x.created||Date.now()).getTime())/86400000))+'d</span></div><small class="unfinished-count">'+(x.unfinished||[]).length+' unfinished tasks</small></article>').join(''):'<p class="intro">No projects in this corner of the graveyard. Bury a new idea above.</p>';
  $('total').textContent=data.projects.length;$('salvageCount').textContent=data.salvage.length;$('revivalCount').textContent=data.projects.filter(x=>x.status==='Resurrecting').length;
  renderSalvage();renderAdoptions();refreshArchiveCard();
 }
