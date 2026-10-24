@@ -316,7 +316,7 @@ function shadowPlayShortReveal(name, reduced = shadowReducedMotion) {
   const targets = shadowViewTargets(name);
   // Remove initial hiding first; all these operations happen in the same task, before paint.
   document.documentElement.classList.remove('shadow-intro-pending');
-  if (name !== 'dashboard') document.body.classList.add('shadow-vignette-active');
+  document.body.classList.add('shadow-vignette-active');
   targets.forEach((el, index) => shadowAnimateElement(el, reduced ? 'shadow-short-fade' : 'shadow-short', reduced ? 0 : Math.min(index, 18), false));
 }
 
