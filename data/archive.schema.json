@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/project-graveyard/archive.schema.json",
+  "title": "Project Graveyard archive",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "projects"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "exportedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Dead",
+              "Dormant",
+              "Archived",
+              "Resurrecting",
+              "Adopted"
+            ]
+          },
+          "cause": {
+            "type": "string"
+          },
+          "progress": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "completed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unfinished": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "created": {
+            "type": "string"
+          },
+          "lastActive": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "salvage": {
+      "type": "array"
+    },
+    "adoptionDrafts": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}
