@@ -106,6 +106,7 @@ function render(){
  renderSalvage();renderAdoptions();refreshArchiveCard();
 }
 function renderSalvage(){
+ data.salvage.forEach(item=>{if(!item.id)item.id=uid()});
  $('salvageList').innerHTML=data.salvage.map((s,i)=>'<li draggable="true" data-card-type="salvage" data-record-id="'+esc(s.id||i)+'" data-index="'+i+'" tabindex="0" aria-label="Salvage card '+esc(s.name)+'. Drag to Remove Salvage."><span class="drag-handle" data-drag-handle aria-hidden="true">⠿ DRAG ITEM</span><strong>'+esc(s.name)+'</strong> — '+esc(s.source||'Unknown source')+'<br>'+esc(s.notes||'No notes')+'<br><span class="drag-hint">DRAG THIS ITEM TO REMOVE SALVAGE</span></li>').join('')||'<li>Nothing salvaged yet.</li>';
 }
 function renderAdoptions(){
