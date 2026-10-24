@@ -1,0 +1,42 @@
+# The Project Graveyard
+
+A responsive, local-first archive for unfinished projects. The site is built as a single HTML file with embedded CSS and JavaScript, so it does not require a package manager, build step, backend, or API keys.
+
+## Run locally
+
+1. Download or clone this repository.
+2. Open `index (2).html` in a modern browser.
+
+Project records are stored in that browser's `localStorage`. They remain on the same browser and device unless you export a backup. Use the app's JSON export and import features to back up or restore your archive.
+
+## Features
+
+- Create, edit, search, filter, and delete project records
+- Track project goals, status, causes, tags, progress, completed work, and unfinished work
+- Built-in example projects
+- Local browser storage
+- JSON archive export and import
+- Salvage notes and adoption listings
+- Revival prompts, timeline views, and a focus timer
+- Drag-and-drop action zones, with keyboard alternatives
+- Responsive layout and reduced-motion support
+
+## Files
+
+- `index (2).html` — the complete application: HTML, CSS, and JavaScript
+- `README.md` — setup and project information
+- `LICENSE` — Apache License 2.0
+
+No other files or dependencies are needed to run the app locally.
+
+## Hosting note
+
+Static hosting providers commonly look for a file named `index.html` as the default homepage. This project intentionally keeps the requested filename `index (2).html`; when deploying it, configure the host to serve that file as the entry page, or use its direct URL if supported.
+
+## Privacy
+
+The app is designed to store project data locally in your browser and does not require a server or external database. Exported backups are files you choose to download or share.
+
+## License
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
